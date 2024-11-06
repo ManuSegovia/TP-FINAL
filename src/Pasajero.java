@@ -1,9 +1,10 @@
-package Usuarios;
-
-import org.json.JSONObject;
+import java.util.List;
+import java.util.Objects;
 
 public class Pasajero
 {
+    private int id;
+    private static int cont=1;
     private String nombre;
     private String apellido;
     private String dni;
@@ -16,6 +17,24 @@ public class Pasajero
         this.dni = dni;
         this.origen = origen;
         this.domicilioOrigen = domicilioOrigen;
+        this.id=cont;
+        cont++;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public static int getCont() {
+        return cont;
+    }
+
+    public static void setCont(int cont) {
+        Pasajero.cont = cont;
     }
 
     public String getNombre() {
@@ -59,33 +78,27 @@ public class Pasajero
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pasajero pasajero = (Pasajero) o;
+        return id == pasajero.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
     public String toString() {
-        return "nombre='" + nombre + '\'' +
+        return "Pasajero{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
                 ", apellido='" + apellido + '\'' +
                 ", dni='" + dni + '\'' +
                 ", origen='" + origen + '\'' +
                 ", domicilioOrigen='" + domicilioOrigen + '\'' +
                 '}';
     }
-    public JSONObject toJSON ()
-    {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("nombre", this.nombre);
-        jsonObject.put("apellido", this.apellido);
-        jsonObject.put("dni", this.dni);
-        jsonObject.put("origen", this.origen);
-        jsonObject.put("domicilioOrigen", this.domicilioOrigen);
-        return jsonObject;
-    }
-
-    public static Pasajero fromJson(JSONObject json) {
-        String nombre = json.getString("nombre");
-        String apellido = json.getString("apellido");
-        String dni = json.getString("dni");
-        String origen = json.getString("origen");
-        String domicilioOrigen = json.getString("domicilioOrigen");
-
-        return new Pasajero(nombre, apellido, dni, origen, domicilioOrigen);
-    }
-
 }

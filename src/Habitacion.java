@@ -1,8 +1,6 @@
-package Clases;
-
-import Enums.EstadoHabitacion;
-import Enums.TipoHabitacion;
-import org.json.JSONObject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class Habitacion
 {
@@ -10,8 +8,11 @@ public class Habitacion
     private TipoHabitacion tipoHabitacion;//Creo que esta bien hacerlo enum
     private EstadoHabitacion estadoHabitacion;
 
-
-    public Habitacion(int numero, TipoHabitacion tipoHabitacion, EstadoHabitacion estadoHabitacion) {
+    public Habitacion(int numero,TipoHabitacion tipoHabitacion,EstadoHabitacion estadoHabitacion)
+    {
+        this.numero=numero;
+        this.tipoHabitacion=tipoHabitacion;
+        this.estadoHabitacion=estadoHabitacion;
     }
 
     public int getNumero() {
@@ -38,30 +39,35 @@ public class Habitacion
         this.estadoHabitacion = estadoHabitacion;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Habitacion that = (Habitacion) o;
+        return numero == that.numero;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(numero);
+    }
 
     @Override
     public String toString() {
-        return "numero=" + numero +
+        return "Habitacion{" +
+                "numero=" + numero +
                 ", tipoHabitacion=" + tipoHabitacion +
                 ", estadoHabitacion=" + estadoHabitacion +
                 '}';
     }
 
-    public JSONObject toJSON() {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("numero", this.numero);
-        jsonObject.put("tipoHabitacion", this.tipoHabitacion.toString());
-        jsonObject.put("estadoHabitacion", this.estadoHabitacion.toString());
-        return jsonObject;
-    }
+    //reservar habitacion lo hace HOTEL
 
-    public static Habitacion fromJSON(JSONObject json) {
-        int numero = json.getInt("numero");
-        TipoHabitacion tipoHabitacion = TipoHabitacion.valueOf(json.getString("tipoHabitacion"));
-        EstadoHabitacion estadoHabitacion = EstadoHabitacion.valueOf(json.getString("estadoHabitacion"));
-        return new Habitacion(numero, tipoHabitacion, estadoHabitacion);
+    public String cambiarEstadoHabitacion(Habitacion habitacion)
+    {
+        habitacion.setEstadoHabitacion(EstadoHabitacion.OCUPADA);
+        return "Habitacion reservada";
     }
-
 
     //cambiar estado, asignar pasajero
 }
