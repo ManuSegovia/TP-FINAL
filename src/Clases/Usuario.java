@@ -1,3 +1,7 @@
+package Clases;
+
+import Enums.TipoUsuario;
+
 import java.util.Objects;
 
 public abstract class Usuario
@@ -44,7 +48,7 @@ public abstract class Usuario
 
     @Override
     public String toString() {
-        return "Usuario{" +
+        return "Clases.Usuario{" +
                 "dni='" + dni + '\'' +
                 ", nombre='" + nombre + '\'' +
                 '}';

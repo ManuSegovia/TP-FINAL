@@ -1,4 +1,7 @@
-import java.sql.Struct;
+package Clases;
+
+import Enums.EstadoHabitacion;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +44,7 @@ public class GestorDeReservas <T>
             while (iterador.hasNext())
             {
                 Map.Entry<Integer,ArrayList<T>> entrada = iterador.next();
-                mensaje= mensaje.append("\n" + "Habitacion: " + entrada.getKey() + "\n");
+                mensaje= mensaje.append("\n" + "Clases.Habitacion: " + entrada.getKey() + "\n");
                 for (T elemento: entrada.getValue())
                 {
                     mensaje=mensaje.append(elemento.toString()).append("\n");
@@ -64,7 +67,7 @@ public class GestorDeReservas <T>
             while (iterador.hasNext())
             {
                 Map.Entry<Integer,ArrayList<T>> entrada = iterador.next();
-                mensaje= mensaje.append("\n" + "Habitacion: " + entrada.getKey() + "\n");
+                mensaje= mensaje.append("\n" + "Clases.Habitacion: " + entrada.getKey() + "\n");
                 for (T elemento: entrada.getValue())
                 {
                     if(entrada.getValue().equals(EstadoHabitacion.OCUPADA))
@@ -90,7 +93,7 @@ public class GestorDeReservas <T>
             while (iterador.hasNext())
             {
                 Map.Entry<Integer,ArrayList<T>> entrada = iterador.next();
-                mensaje= mensaje.append("\n" + "Habitacion: " + entrada.getKey() + "\n");
+                mensaje= mensaje.append("\n" + "Clases.Habitacion: " + entrada.getKey() + "\n");
                 for (T elemento: entrada.getValue())
                 {
                     if(entrada.getValue().equals(EstadoHabitacion.DISPONIBLE))
@@ -116,7 +119,7 @@ public class GestorDeReservas <T>
             while (iterador.hasNext())
             {
                 Map.Entry<Integer,ArrayList<T>> entrada = iterador.next();
-                mensaje= mensaje.append("\n" + "Habitacion: " + entrada.getKey() + "\n");
+                mensaje= mensaje.append("\n" + "Clases.Habitacion: " + entrada.getKey() + "\n");
                 for (T elemento: entrada.getValue())
                 {
                     if(entrada.getValue().equals(EstadoHabitacion.OCUPADA))

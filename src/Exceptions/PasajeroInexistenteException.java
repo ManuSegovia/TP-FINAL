@@ -1,5 +1,7 @@
+package Exceptions;
+
 public class PasajeroInexistenteException extends RuntimeException {
     public PasajeroInexistenteException() {
-        super("Pasajero inexistente");
+        super("Clases.Pasajero inexistente");
     }
 }

@@ -1,4 +1,5 @@
-import java.util.List;
+package Clases;
+
 import java.util.Objects;
 
 public class Pasajero
@@ -92,7 +93,7 @@ public class Pasajero
 
     @Override
     public String toString() {
-        return "Pasajero{" +
+        return "Clases.Pasajero{" +
                 "id=" + id +
                 ", nombre='" + nombre + '\'' +
                 ", apellido='" + apellido + '\'' +

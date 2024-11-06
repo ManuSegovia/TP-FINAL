@@ -1,3 +1,5 @@
+package Clases;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -76,7 +78,7 @@ public class GestorDeDatos<T>
 
     @Override
     public String toString() {
-        return "GestorDeDatos{" +
+        return "Clases.GestorDeDatos{" +
                 "elementos=" + elementos +
                 '}';
     }

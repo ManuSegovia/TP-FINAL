@@ -1,10 +1,14 @@
+package Clases;
+
+import Enums.TipoUsuario;
+
 public class Administrador extends Usuario
 {
     protected String contraseña;
 
     public Administrador(String dni,String nombre,String contraseña)
     {
-        super(dni,nombre,TipoUsuario.ADMINISTRADOR);
+        super(dni,nombre, TipoUsuario.ADMINISTRADOR);
         this.contraseña=contraseña;
     }
 
@@ -18,7 +22,7 @@ public class Administrador extends Usuario
 
     @Override
     public String toString() {
-        return "Administrador{" +
+        return "Clases.Administrador{" +
                 "contraseña='" + contraseña + '\'' +
                 ", dni='" + dni + '\'' +
                 ", nombre='" + nombre + '\'' +

@@ -1,3 +1,5 @@
+package Exceptions;
+
 //nuevo
 public class ContraseñaIncorrectaException extends RuntimeException
 {

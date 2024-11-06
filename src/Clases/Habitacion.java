@@ -1,5 +1,8 @@
-import java.util.ArrayList;
-import java.util.List;
+package Clases;
+
+import Enums.EstadoHabitacion;
+import Enums.TipoHabitacion;
+
 import java.util.Objects;
 
 public class Habitacion
@@ -54,7 +57,7 @@ public class Habitacion
 
     @Override
     public String toString() {
-        return "Habitacion{" +
+        return "Clases.Habitacion{" +
                 "numero=" + numero +
                 ", tipoHabitacion=" + tipoHabitacion +
                 ", estadoHabitacion=" + estadoHabitacion +
@@ -66,7 +69,7 @@ public class Habitacion
     public String cambiarEstadoHabitacion(Habitacion habitacion)
     {
         habitacion.setEstadoHabitacion(EstadoHabitacion.OCUPADA);
-        return "Habitacion reservada";
+        return "Clases.Habitacion reservada";
     }
 
     //cambiar estado, asignar pasajero

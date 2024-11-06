@@ -1,6 +1,10 @@
+package Clases;
+
+import Enums.EstadoHabitacion;
+import Exceptions.HabitacionInexistenteException;
+import Exceptions.PasajeroInexistenteException;
+
 import java.time.LocalDate;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Objects;
 
 public class Hotel
@@ -41,7 +45,7 @@ public class Hotel
 
     //ocupar una habitación en un período determinado (consultando la ocupación y las reservas).
 
-    public void generaeReserva(int numeroHabtacion, int idPasajero, LocalDate fechaReserva, LocalDate fechaFinReserva)throws HabitacionInexistenteException,PasajeroInexistenteException
+    public void generaeReserva(int numeroHabtacion, int idPasajero, LocalDate fechaReserva, LocalDate fechaFinReserva)throws HabitacionInexistenteException, PasajeroInexistenteException
     {
         if(habitaciones.buscar(numeroHabtacion)==null)
         {
@@ -107,7 +111,7 @@ public class Hotel
 
     @Override
     public String toString() {
-        return "Hotel{" +
+        return "Clases.Hotel{" +
                 "nombre='" + nombre + '\'' +
                 ", habitaciones=" + habitaciones +
                 ", pasajeros=" + pasajeros +
