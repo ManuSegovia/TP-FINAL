@@ -3,6 +3,7 @@ import Clases.Pasajero;
 import Clases.Reserva;
 import Enums.EstadoHabitacion;
 import Enums.TipoHabitacion;
+
 import java.time.LocalDate;
 import java.util.Scanner;
 
@@ -57,8 +58,8 @@ public class Main
 
     Pasajero lola=new Pasajero("lola","perez","44860140","jdkjad","ksdsaas");
     Habitacion habitacion= new Habitacion(1, TipoHabitacion.SIMPLE, EstadoHabitacion.DISPONIBLE);
+    Reserva reserva= new Reserva(lola,LocalDate.of(2024,10,24),LocalDate.of(2025,10,24),habitacion);
 
-    Reserva reserva= new Reserva(lola.getId(),LocalDate.of(2024,10,24),LocalDate.of(2025,10,24), habitacion.getNumero());
 
 //CONSULTAS
     //consultar listado de de habitaciones actualmente ocupadas
