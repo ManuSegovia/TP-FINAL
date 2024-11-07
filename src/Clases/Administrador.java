@@ -30,5 +30,5 @@ public class Administrador extends Usuario
                 '}';
     }
 
-    //metodos para crear
+
 }

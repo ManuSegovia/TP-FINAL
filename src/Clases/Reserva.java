@@ -66,8 +66,7 @@ public class Reserva extends GestorDeDatos
 
     @Override
     public String toString() {
-        return "Clases.Reserva{" +
-                "idPasajero=" + idPasajero +
+        return  "idPasajero=" + idPasajero +
                 ", fechaInicio=" + fechaInicio +
                 ", fechaFin=" + fechaFin +
                 ", numeroHabitacion=" + numeroHabitacion +

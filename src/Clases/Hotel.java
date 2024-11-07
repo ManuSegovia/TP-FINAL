@@ -33,7 +33,7 @@ public class Hotel
         return reservas.listarHabitacionesOcupadas();
     }
 
-    public String listarHbitacionesDisponibles()
+    public String listarHabitacionesDisponibles()
     {
         return reservas.listarHabitacionesDisponibles();
     }
@@ -45,7 +45,7 @@ public class Hotel
 
     //ocupar una habitación en un período determinado (consultando la ocupación y las reservas).
 
-    public void generaeReserva(int numeroHabtacion, int idPasajero, LocalDate fechaReserva, LocalDate fechaFinReserva)throws HabitacionInexistenteException, PasajeroInexistenteException
+    public void generarReserva(int numeroHabtacion, int idPasajero, LocalDate fechaReserva, LocalDate fechaFinReserva)throws HabitacionInexistenteException, PasajeroInexistenteException
     {
         if(habitaciones.buscar(numeroHabtacion)==null)
         {
