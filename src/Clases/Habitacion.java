@@ -69,7 +69,7 @@ public class Habitacion
     public String cambiarEstadoHabitacion(Habitacion habitacion)
     {
         habitacion.setEstadoHabitacion(EstadoHabitacion.OCUPADA);
-        return "Clases.Habitacion reservada";
+        return "Habitacion reservada";
     }
 
     //cambiar estado, asignar pasajero

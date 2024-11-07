@@ -17,7 +17,7 @@ public class GestorDeReservas <T>
         this.listadoHabitaciones =new HashMap<>();
     }
 
-    public boolean agregar(int numeroHabitacion, T elemento)
+    public String agregar(int numeroHabitacion, T elemento)
     {
         Reserva cargar = (Reserva) elemento;
         if(!listadoHabitaciones.containsKey(numeroHabitacion))
@@ -34,15 +34,15 @@ public class GestorDeReservas <T>
                 Reserva reserva = iterator.next();
                 if ((cargar.getFechaInicio().isBefore(reserva.getFechaFin()) && cargar.getFechaFin().isAfter(reserva.getFechaInicio())) ||
                         (cargar.getFechaInicio().isEqual(reserva.getFechaInicio()) || cargar.getFechaFin().isEqual(reserva.getFechaFin()))) {
-                    return false; // Si se solapan, no agregamos la reserva
+                    return "La habitacion no se puede reservar en esa fecha"; // Si se solapan, no agregamos la reserva
                 }
             }
         }
         listadoHabitaciones.get(numeroHabitacion).add((T) cargar);
-        return true;
+        return "Se reservó correctamente la habitacion";
     }
 
-    public boolean eliminar(int key, int id_Pasajero, LocalDate fechaInicio, LocalDate fecha_Fin) {
+    public String eliminar(int key, int id_Pasajero, LocalDate fechaInicio, LocalDate fecha_Fin) {
         // Verificamos si la clave existe en el mapa
         if (listadoHabitaciones.containsKey(key)) {
             // Recuperamos la lista de reservas asociada a esa clave, haciendo un casting seguro
@@ -54,11 +54,11 @@ public class GestorDeReservas <T>
                 Reserva reserva = iterator.next();
                 if (reserva.getIdPasajero() == id_Pasajero && reserva.getFechaInicio().isEqual(fechaInicio) && reserva.getFechaFin().isEqual(fecha_Fin)) {
                     iterator.remove(); // Eliminamos la reserva encontrada
-                    return true; // Terminamos y retornamos true
+                    return "Se elimino correctamente la reserva a la habitacion " + reserva.getNumeroHabitacion() + " a nombre del pasajero " + id_Pasajero;
                 }
             }
         }
-        return false; // Si no se encontró la reserva
+        return " No se encontro una habitacion asociada a estos datos";
     }
 
 
@@ -75,7 +75,7 @@ public class GestorDeReservas <T>
             while (iterador.hasNext())
             {
                 Map.Entry<Integer,ArrayList<T>> entrada = iterador.next();
-                mensaje= mensaje.append("\n" + "Clases.Habitacion: " + entrada.getKey() + "\n");
+                mensaje= mensaje.append("\n" + "Habitacion: " + entrada.getKey() + "\n");
                 for (T elemento: entrada.getValue())
                 {
                     mensaje=mensaje.append(elemento.toString()).append("\n");
@@ -98,7 +98,7 @@ public class GestorDeReservas <T>
             while (iterador.hasNext())
             {
                 Map.Entry<Integer,ArrayList<T>> entrada = iterador.next();
-                mensaje= mensaje.append("\n" + "Clases.Habitacion: " + entrada.getKey() + "\n");
+                mensaje= mensaje.append("\n" + "Habitacion: " + entrada.getKey() + "\n");
                 for (T elemento: entrada.getValue())
                 {
                     if(entrada.getValue().equals(EstadoHabitacion.OCUPADA))
@@ -124,7 +124,7 @@ public class GestorDeReservas <T>
             while (iterador.hasNext())
             {
                 Map.Entry<Integer,ArrayList<T>> entrada = iterador.next();
-                mensaje= mensaje.append("\n" + "Clases.Habitacion: " + entrada.getKey() + "\n");
+                mensaje= mensaje.append("\n" + "Habitacion: " + entrada.getKey() + "\n");
                 for (T elemento: entrada.getValue())
                 {
                     if(entrada.getValue().equals(EstadoHabitacion.DISPONIBLE))
@@ -150,7 +150,7 @@ public class GestorDeReservas <T>
             while (iterador.hasNext())
             {
                 Map.Entry<Integer,ArrayList<T>> entrada = iterador.next();
-                mensaje= mensaje.append("\n" + "Clases.Habitacion: " + entrada.getKey() + "\n");
+                mensaje= mensaje.append("\n" + "Habitacion: " + entrada.getKey() + "\n");
                 for (T elemento: entrada.getValue())
                 {
                     if(entrada.getValue().equals(EstadoHabitacion.OCUPADA))
@@ -190,8 +190,19 @@ public class GestorDeReservas <T>
         }
     }
 
-
-    //agregar metodo buscar
+    public int buscar(int key , T elemento)
+    {
+        Reserva buscar = (Reserva) elemento;
+        ArrayList <Reserva> reservas = (ArrayList<Reserva>) listadoHabitaciones.get(key);
+        for (int i = 0 ; i < reservas.size() ; i++)
+        {
+            if (reservas.get(i).equals(buscar))
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
 
     //consultar listado de de habitaciones actualmente ocupadas
 }

@@ -1,6 +1,7 @@
 package Clases;
 
 import Enums.EstadoHabitacion;
+import Enums.TipoHabitacion;
 import Exceptions.HabitacionInexistenteException;
 import Exceptions.PasajeroInexistenteException;
 
@@ -23,11 +24,7 @@ public class Hotel
         this.reservas=new GestorDeReservas<Reserva>();
     }
 
-    public String listarHabitaciones()
-    {
-        return habitaciones.listar();
-    }
-
+// Cuestiones relacionadas a las reservas  -------------------------------------------------------------------------------------------
     public String listarHabitacionesActualmenteOcupadas()
     {
         return reservas.listarHabitacionesOcupadas();
@@ -45,7 +42,7 @@ public class Hotel
 
     //ocupar una habitación en un período determinado (consultando la ocupación y las reservas).
 
-    public void generarReserva(int numeroHabtacion, int idPasajero, LocalDate fechaReserva, LocalDate fechaFinReserva)throws HabitacionInexistenteException, PasajeroInexistenteException
+    public String generarReserva(int numeroHabtacion, int idPasajero, LocalDate fechaReserva, LocalDate fechaFinReserva)throws HabitacionInexistenteException, PasajeroInexistenteException
     {
         if(habitaciones.buscar(numeroHabtacion)==null)
         {
@@ -55,9 +52,42 @@ public class Hotel
         {
             throw new PasajeroInexistenteException();
         }
-        //verificar si se puede reservar
         Reserva nueva = new Reserva(idPasajero,fechaReserva,fechaFinReserva,numeroHabtacion);
-        reservas.agregar(numeroHabtacion,nueva);
+        String rtdo = reservas.agregar(numeroHabtacion, nueva);
+        return rtdo;
+    }
+    public String eliminarReserva(int numeroHabtacion, int idPasajero, LocalDate fechaReserva, LocalDate fechaFinReserva)throws HabitacionInexistenteException, PasajeroInexistenteException
+    {
+        if(habitaciones.buscar(numeroHabtacion)==null)
+        {
+            throw new HabitacionInexistenteException();
+        }
+        if(pasajeros.buscar(idPasajero)==null)
+        {
+            throw new PasajeroInexistenteException();
+        }
+        String rtdo = reservas.eliminar(numeroHabtacion, idPasajero, fechaReserva, fechaFinReserva);
+        return rtdo;
+    }
+    //---------------------------------------------------------------------------------------------------------------------------------
+    // Cuestiones relacionandas con las habitaciones (Parte concerje) -----------------------------------------------------------------
+    public String listarHabitaciones()
+    {
+        return habitaciones.listar();
+    }
+    // Cuestiones relacionandas con las habitaciones (Parte admin) -----------------------------------------------------------------
+
+    public String crearHabitacionNueva (Administrador admin, int numero, TipoHabitacion tipoHabitacion, EstadoHabitacion estadoHabitacion)
+    {
+        if (habitaciones.buscarBoolean(numero))git 
+        {
+            return "La habitacion ya existe";
+        }
+        else {
+            Habitacion HabitacionNueva = admin.crearHabitacion(numero, tipoHabitacion, estadoHabitacion);
+            habitaciones.agregar(numero, HabitacionNueva);
+            return "Se creo correctamente la habitacion " + numero;
+        }
     }
 
 

@@ -49,6 +49,10 @@ public class GestorDeDatos<T>
     {
         return elementos.get(key);
     }
+    public boolean buscarBoolean(int key)
+    {
+        return elementos.containsKey(key);
+    }
 
     public Map<Integer, T> getElementos() {
         return elementos;
