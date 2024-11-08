@@ -1,5 +1,7 @@
 package Clases;
 
+import Enums.EstadoReserva;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -9,6 +11,7 @@ public class Reserva extends GestorDeDatos
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private int numeroHabitacion;
+    private EstadoReserva estado;
 
     public Reserva(int idPasajero,LocalDate fechaInicio,LocalDate fechaFin,int numeroHabitacion)
     {
@@ -16,6 +19,7 @@ public class Reserva extends GestorDeDatos
         this.fechaInicio = fechaInicio;
         this.fechaFin=fechaFin;
         this.numeroHabitacion=numeroHabitacion;
+        this.estado = EstadoReserva.PENDIENTE;
     }
 
     public int getIdPasajero() {
@@ -50,6 +54,14 @@ public class Reserva extends GestorDeDatos
         this.numeroHabitacion = numeroHabitacion;
     }
 
+    public EstadoReserva getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoReserva estado) {
+        this.estado = estado;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -70,6 +82,46 @@ public class Reserva extends GestorDeDatos
                 ", fechaInicio=" + fechaInicio +
                 ", fechaFin=" + fechaFin +
                 ", numeroHabitacion=" + numeroHabitacion +
-                '}';
+                ", estadoReserva=" + estado;
     }
+
+    public String realizar_CHECKIN() {
+        // Verifica si la fecha de inicio es en el pasado
+        if (fechaInicio.isBefore(LocalDate.now())) {
+            return "La fecha de inicio ya pasó, no se puede realizar el check-in.";
+        }
+
+        // Verifica si ya se realizó el check-in
+        if (estado == EstadoReserva.CHECKIN) {
+            return "Ya se ha realizado el check-in.";
+        }
+
+        // Realiza el check-in si la fecha es hoy o en el futuro
+        if (fechaInicio.isEqual(LocalDate.now()) || fechaInicio.isAfter(LocalDate.now())) {
+            estado = EstadoReserva.CHECKIN;
+            return "El check-in se realizó correctamente.";
+        }
+
+        // Si la fecha de inicio está en el futuro, no se puede hacer check-in
+        return "Aún no se puede realizar el check-in, la fecha de inicio está en el futuro.";
+    }
+
+    public String realizar_CHECKOUT() {
+        // Verifica si la reserva ya está en estado CHECKOUT
+        if (estado == EstadoReserva.CHECKOUT) {
+            return "La reserva ya se encuentra en estado CHECKOUT.";
+        }
+
+        // Verifica si la fecha de fin ya pasó o es hoy
+        if (fechaFin.isBefore(LocalDate.now()) || fechaFin.isEqual(LocalDate.now())) {
+            estado = EstadoReserva.CHECKOUT;
+            return "El check-out se realizó correctamente. Gracias por su estadía.";
+        }
+
+        // Si la fecha de fin está en el futuro, no se puede hacer check-out
+        return "Aún no se puede realizar el check-out, la fecha de fin de la reserva no ha llegado.";
+    }
+
+
+
 }

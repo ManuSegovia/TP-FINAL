@@ -1,6 +1,4 @@
-import Clases.Habitacion;
-import Clases.Pasajero;
-import Clases.Reserva;
+import Clases.*;
 import Enums.EstadoHabitacion;
 import Enums.TipoHabitacion;
 
@@ -13,52 +11,23 @@ public class Main
     //interfaces de ocupable
     public static void main(String[] args)
     {
-        //admin
-        //tendria que poder hacer todo en el programa
-        //backup de la informacion
-        //creacion de otros usuairos
-        //asignacion de permisos, etc
+        Hotel mihotel = new Hotel("Valles");
+        Administrador admin = new Administrador("46277918", "Juani", "admin123");
+        Conserje empleado = new Conserje("46277918", "Manu");
+        System.out.println(mihotel.crearHabitacionNueva(admin, 3232, TipoHabitacion.DOBLE, EstadoHabitacion.DISPONIBLE));
+        System.out.println(mihotel.crearHabitacionNueva(admin, 3233, TipoHabitacion.DOBLE, EstadoHabitacion.DISPONIBLE));
+        System.out.println(mihotel.listarHabitaciones());
+        System.out.println(mihotel.generarReservaConCreacionDePasajero(3232, LocalDate.of(2024, 11, 10), LocalDate.of(2024, 11, 15)));
+        System.out.println(mihotel.listarPasajeros());
+        System.out.println(mihotel.listarReservas());
+        System.out.println(mihotel.generarReservaConCreacionDePasajero(3232, LocalDate.of(2024, 11, 16), LocalDate.of(2024, 11, 18)));
+        System.out.println(mihotel.listarPasajeros());
+        System.out.println(mihotel.listarReservas());
+        System.out.println(mihotel.crearPasajero());
+        System.out.println(mihotel.generarReserva(3233, 3, LocalDate.of(2024, 11, 18), LocalDate.of(2024, 11, 16)));
 
-        //conserje/recepcionista
-        //realiza los check-in check-out
-        //las reservas, etc
-
-        //pasajero (NO)
-        //solicitar reservas
-        //o realizar consumos en las habitaciones ya ocupadas
-        //ver habitaciones ya disponibles, etc
-
-        Scanner scanner=new Scanner(System.in);
-        int opcion;
-
-        do
-        {
-            System.out.println("---MENU---");
-            System.out.println("1. Ingresar");
-            System.out.println("0. Salir");
-
-            opcion=scanner.nextInt();
-
-            switch(opcion)
-            {
-                case 1:
-                    //iniciar sesion
-                    break;
-                case 2:
-                    System.out.println("Saliendo...");
-                    break;
-                default:
-                    System.out.println("Opcion incorrecta...");
-            }
-
-        }while(opcion!=0);
-
-        scanner.close();
     }
 
-    Pasajero lola=new Pasajero("lola","perez","44860140","jdkjad","ksdsaas");
-    Habitacion habitacion= new Habitacion(1, TipoHabitacion.SIMPLE, EstadoHabitacion.DISPONIBLE);
-    Reserva reserva= new Reserva(lola,LocalDate.of(2024,10,24),LocalDate.of(2025,10,24),habitacion);
 
 
 //CONSULTAS

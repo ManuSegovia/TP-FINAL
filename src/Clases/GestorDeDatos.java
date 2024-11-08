@@ -25,30 +25,28 @@ public class GestorDeDatos<T>
         elementos.remove(key);
     }
 
-    public String listar()
-    {
-        StringBuilder mensaje=new StringBuilder();
-        if(elementos.isEmpty())
-        {
+    public String listar() {
+        StringBuilder mensaje = new StringBuilder();
+        if (elementos.isEmpty()) {
             return "No hay nada que mostrar";
-        }
-        else
-        {
-            Iterator<Map.Entry<Integer,T>> iterador=elementos.entrySet().iterator();
-            while(iterador.hasNext())
-            {
-                mensaje=mensaje.append(iterador.next()).append("\n");
+        } else {
+            Iterator<Map.Entry<Integer, T>> iterador = elementos.entrySet().iterator();
+            while (iterador.hasNext()) {
+                // Acceder solo al valor de la entrada, no a la clave
+                mensaje.append(iterador.next().getValue()).append("\n");
             }
         }
 
         return mensaje.toString();
     }
 
+
     //nuevo
     public T buscar(int key)
     {
         return elementos.get(key);
     }
+
     public boolean buscarBoolean(int key)
     {
         return elementos.containsKey(key);

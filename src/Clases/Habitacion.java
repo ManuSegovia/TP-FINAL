@@ -57,20 +57,34 @@ public class Habitacion
 
     @Override
     public String toString() {
-        return "Clases.Habitacion{" +
-                "numero=" + numero +
+        return "numero=" + numero +
                 ", tipoHabitacion=" + tipoHabitacion +
-                ", estadoHabitacion=" + estadoHabitacion +
-                '}';
+                ", estadoHabitacion=" + estadoHabitacion;
     }
 
     //reservar habitacion lo hace HOTEL
 
-    public String cambiarEstadoHabitacion(Habitacion habitacion)
+    public String cambiarEstadoHabitacion()
     {
-        habitacion.setEstadoHabitacion(EstadoHabitacion.OCUPADA);
-        return "Habitacion reservada";
+        if (estadoHabitacion == EstadoHabitacion.DISPONIBLE)
+        {
+            setEstadoHabitacion(EstadoHabitacion.OCUPADA);
+            return "ocupada";
+        }
+        else
+        {
+            if (estadoHabitacion == EstadoHabitacion.OCUPADA)
+            {
+                setEstadoHabitacion(EstadoHabitacion.DISPONIBLE);
+                return "disponible";
+            }
+            else
+            {
+                return "No se puede cambiar el estado de esta habitacion debido a que no se encuentra disponible por montenimiento u otro motivo";
+            }
+        }
     }
+
 
     //cambiar estado, asignar pasajero
 }

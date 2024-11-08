@@ -17,30 +17,42 @@ public class GestorDeReservas <T>
         this.listadoHabitaciones =new HashMap<>();
     }
 
-    public String agregar(int numeroHabitacion, T elemento)
-    {
+    public String agregar(int numeroHabitacion, T elemento) {
         Reserva cargar = (Reserva) elemento;
-        if(!listadoHabitaciones.containsKey(numeroHabitacion))
-        {
-            listadoHabitaciones.put(numeroHabitacion,new ArrayList<>());
+
+        // Validar que la fecha de inicio no sea anterior a la fecha actual
+        if (cargar.getFechaInicio().isBefore(LocalDate.now())) {
+            return "La fecha de inicio no puede ser anterior a la fecha de hoy";
         }
-        else
-        {
+
+        // Validar que la fecha de fin no sea antes de la fecha de inicio
+        if (cargar.getFechaFin().isBefore(cargar.getFechaInicio())) {
+            return "La fecha de fin no puede ser anterior a la fecha de inicio";
+        }
+
+        // Verificar si la habitación existe en el listado
+        if (!listadoHabitaciones.containsKey(numeroHabitacion)) {
+            listadoHabitaciones.put(numeroHabitacion, new ArrayList<>());
+        } else {
             ArrayList<Reserva> reservasAux = (ArrayList<Reserva>) listadoHabitaciones.get(numeroHabitacion);
 
-            // hacemos uso de un interador para recorrer y comprobar que no haya una reserva que impida nuestra reserva;
+            // Recorremos las reservas actuales para verificar si hay solapamientos
             Iterator<Reserva> iterator = reservasAux.iterator();
             while (iterator.hasNext()) {
                 Reserva reserva = iterator.next();
                 if ((cargar.getFechaInicio().isBefore(reserva.getFechaFin()) && cargar.getFechaFin().isAfter(reserva.getFechaInicio())) ||
                         (cargar.getFechaInicio().isEqual(reserva.getFechaInicio()) || cargar.getFechaFin().isEqual(reserva.getFechaFin()))) {
-                    return "La habitacion no se puede reservar en esa fecha"; // Si se solapan, no agregamos la reserva
+                    return "La habitación no se puede reservar en esa fecha"; // Si se solapan, no agregamos la reserva
                 }
             }
         }
+
+        // Si pasó todas las validaciones, agregamos la reserva
         listadoHabitaciones.get(numeroHabitacion).add((T) cargar);
-        return "Se reservó correctamente la habitacion";
+        return "Se reservó correctamente la habitación";
     }
+
+
 
     public String eliminar(int key, int id_Pasajero, LocalDate fechaInicio, LocalDate fecha_Fin) {
         // Verificamos si la clave existe en el mapa
@@ -203,6 +215,28 @@ public class GestorDeReservas <T>
         }
         return -1;
     }
+
+    public Reserva buscarReservaPorPasajero(int idPasajero) {
+        // Iterar sobre el mapa de habitaciones
+        for (Map.Entry<Integer, ArrayList<T>> entry : listadoHabitaciones.entrySet()) {
+            // Obtener la lista de reservas para esta habitación
+            ArrayList<T> reservas = entry.getValue();
+
+            // Buscar en la lista de reservas si alguna tiene el idPasajero igual al proporcionado
+            for (T reserva : reservas) {
+                if (reserva instanceof Reserva) {
+                    Reserva reservaActual = (Reserva) reserva;
+                    if (reservaActual.getIdPasajero() == idPasajero) {
+                        // Si encontramos la reserva, la retornamos
+                        return reservaActual;
+                    }
+                }
+            }
+        }
+        // Si no se encuentra ninguna reserva para el ID de pasajero, retornamos null
+        return null;
+    }
+
 
     //consultar listado de de habitaciones actualmente ocupadas
 }

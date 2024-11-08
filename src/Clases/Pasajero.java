@@ -93,13 +93,11 @@ public class Pasajero
 
     @Override
     public String toString() {
-        return "Clases.Pasajero{" +
-                "id=" + id +
+        return "id=" + id +
                 ", nombre='" + nombre + '\'' +
                 ", apellido='" + apellido + '\'' +
                 ", dni='" + dni + '\'' +
                 ", origen='" + origen + '\'' +
-                ", domicilioOrigen='" + domicilioOrigen + '\'' +
-                '}';
+                ", domicilioOrigen='" + domicilioOrigen;
     }
 }
