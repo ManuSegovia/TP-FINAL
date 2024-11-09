@@ -2,6 +2,8 @@ package Clases;
 
 import Enums.EstadoHabitacion;
 import Enums.TipoHabitacion;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.Objects;
 
@@ -62,6 +64,32 @@ public class Habitacion
                 ", estadoHabitacion=" + estadoHabitacion;
     }
 
+
+    // Método para convertir una Habitacion a JSON
+    public JSONObject toJSON() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("numero", numero);
+        jsonObject.put("tipoHabitacion", tipoHabitacion.toString()); // Convertir el TipoHabitacion a su nombre
+        jsonObject.put("estadoHabitacion", estadoHabitacion.toString()); // Convertir el EstadoHabitacion a su nombre
+        return jsonObject;
+    }
+
+    // Método para almacenar varias habitaciones en formato JSON
+    public static JSONObject habitacionesToJSON(Habitacion... habitaciones) {
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+
+        // Agregar cada habitación al JSONArray
+        for (Habitacion habitacion : habitaciones) {
+            jsonArray.put(habitacion.toJSON()); // Agregar la habitación convertida a JSON
+        }
+
+        jsonObject.put("habitaciones", jsonArray); // Colocar el array dentro del objeto JSON
+        return jsonObject;
+    }
+
+
+
     //reservar habitacion lo hace HOTEL
 
     public String cambiarEstadoHabitacion()
@@ -84,7 +112,6 @@ public class Habitacion
             }
         }
     }
-
 
     //cambiar estado, asignar pasajero
 }

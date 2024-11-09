@@ -1,5 +1,6 @@
 package Clases;
-
+import org.json.JSONArray;
+import org.json.JSONObject;
 import Enums.EstadoHabitacion;
 
 import java.time.LocalDate;
@@ -225,5 +226,26 @@ public class GestorDeReservas<T> {
         }
         return mensaje.toString();
     }
+
+
+    // Método para generar JSON con todas las reservas
+    public JSONObject reservasToJSON() {
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+
+        for (Map.Entry<Integer, ArrayList<T>> entry : listadoHabitaciones.entrySet()) {
+            for (T elemento : entry.getValue()) {
+                if (elemento instanceof Reserva) {
+                    Reserva reserva = (Reserva) elemento;
+                    jsonArray.put(reserva.toJSON());  // Usa el método toJSON de Reserva
+                }
+            }
+        }
+
+        jsonObject.put("reservas", jsonArray);  // Agrega el array al objeto principal
+        return jsonObject;
+    }
+
+
     //consultar listado de de habitaciones actualmente ocupadas
 }

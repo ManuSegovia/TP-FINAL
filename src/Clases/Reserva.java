@@ -1,5 +1,5 @@
 package Clases;
-
+import org.json.JSONObject;
 import Enums.EstadoReserva;
 
 import java.time.LocalDate;
@@ -122,6 +122,14 @@ public class Reserva extends GestorDeDatos
         return "Aún no se puede realizar el check-out, la fecha de fin de la reserva no ha llegado.";
     }
 
-
+    public JSONObject toJSON() {
+        JSONObject json = new JSONObject();
+        json.put("idPasajero", idPasajero);
+        json.put("fechaInicio", fechaInicio.toString());
+        json.put("fechaFin", fechaFin.toString());
+        json.put("numeroHabitacion", numeroHabitacion);
+        json.put("estado", estado.toString());
+        return json;
+    }
 
 }
