@@ -6,15 +6,19 @@ import java.util.Objects;
 
 public abstract class Usuario
 {
+    protected int id;
     protected String dni;
     protected String nombre;
     protected TipoUsuario tipoUsuario;
+    private static int cont = 1;
 
     public Usuario(String dni,String nombre,TipoUsuario tipoUsuario)
     {
+        this.id = cont;
         this.dni=dni;
         this.nombre=nombre;
         this.tipoUsuario=tipoUsuario;
+        cont++;
     }
 
     public String getDni() {
@@ -31,6 +35,22 @@ public abstract class Usuario
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public TipoUsuario getTipoUsuario() {
+        return tipoUsuario;
+    }
+
+    public void setTipoUsuario(TipoUsuario tipoUsuario) {
+        this.tipoUsuario = tipoUsuario;
     }
 
     @Override

@@ -2,8 +2,10 @@ package Clases;
 
 import Enums.EstadoHabitacion;
 import Enums.TipoHabitacion;
+import Enums.TipoUsuario;
 import Exceptions.HabitacionInexistenteException;
 import Exceptions.PasajeroInexistenteException;
+import Exceptions.ListaVaciaException;
 
 import java.time.LocalDate;
 import java.util.Map;
@@ -16,12 +18,86 @@ public class Hotel {
     private GestorDeDatos<Habitacion> habitaciones;
     private GestorDeDatos<Pasajero> pasajeros;
     private GestorDeReservas<Reserva> reservas;
+    private GestorDeDatos<Usuario> usuarios;
 
     public Hotel(String nombre) {
         this.nombre = nombre;
         this.habitaciones = new GestorDeDatos<Habitacion>();
         this.pasajeros = new GestorDeDatos<Pasajero>();
         this.reservas = new GestorDeReservas<Reserva>();
+        this.usuarios = new GestorDeDatos<Usuario>();
+    }
+
+    // funciones para buscar usuario segun dni y para retornarlo -------------------------------------------------------------------
+
+    public int buscarUsuarioPorDni(String dni) {
+        for (Map.Entry<Integer, Usuario> entry : usuarios.getElementos().entrySet()) {
+            // Comprobamos si el DNI coincide
+            if (entry.getValue().getDni().equals(dni)) {
+                // Si coincide, retornamos el tipo de usuario
+                Usuario usuario = entry.getValue();
+                if (usuario.getTipoUsuario() == TipoUsuario.ADMINISTRADOR) {
+                    return 1;  // Es administrador
+                } else if (usuario.getTipoUsuario() == TipoUsuario.CONSERJE) {
+                    return 0;  // Es conserje
+                }
+            }
+        }
+        return -1;  // Si no encuentra el usuario, devuelve -1
+    }
+
+    public Usuario buscarUsuarioRetornarlo(String dni) {
+        for (Map.Entry<Integer, Usuario> entry : usuarios.getElementos().entrySet()) {
+            // Comprobamos si el DNI coincide
+            if (entry.getValue().getDni().equals(dni)) {
+                // Si coincide, retornamos el usuario
+                return entry.getValue();
+            }
+        }
+        return null;  // Si no encuentra el usuario, devuelve null
+    }
+
+    public Pasajero buscarPasajeroPorDni(String dni) {
+        for (Map.Entry<Integer, Pasajero> entry : pasajeros.getElementos().entrySet()) {
+            // Comprobamos si el DNI coincide
+            if (entry.getValue().getDni().equals(dni)) {
+                // Si coincide, retornamos el usuario
+                return entry.getValue();
+            }
+        }
+        return null;  // Si no encuentra el usuario, devuelve null
+    }
+
+    public Usuario buscarConcerjePorDni(String dni) {
+        for (Map.Entry<Integer, Usuario> entry : usuarios.getElementos().entrySet()) {
+            // Comprobamos si el DNI coincide
+            if (entry.getValue().getDni().equals(dni) && entry.getValue().getTipoUsuario() == TipoUsuario.CONSERJE) {
+                // Si coincide, retornamos el usuario
+                return entry.getValue();
+            }
+        }
+        return null;  // Si no encuentra el usuario, devuelve null
+    }
+
+    public Usuario buscarAdministradorPorDni(String dni) {
+        for (Map.Entry<Integer, Usuario> entry : usuarios.getElementos().entrySet()) {
+            // Comprobamos si el DNI coincide
+            if (entry.getValue().getDni().equals(dni) && entry.getValue().getTipoUsuario() == TipoUsuario.ADMINISTRADOR) {
+                // Si coincide, retornamos el usuario
+                return entry.getValue();
+            }
+        }
+        return null;  // Si no encuentra el usuario, devuelve null
+    }
+
+    // funcion para buscar usuarios en el inicio de seccion-------------------------------------------------------------------------------
+
+    public boolean verificarContraseñaAdministrador(String dni, String contra) throws ListaVaciaException {
+        Administrador usuarioAux = (Administrador) buscarUsuarioRetornarlo(dni);
+        if (usuarioAux == null) {
+            throw new ListaVaciaException("Actualmente no hay administradores registrados en el sistema");
+        }
+        return Login.comprobarContraseñas(contra, usuarioAux.getContraseña());
     }
 
 // Cuestiones relacionadas a las reservas  -------------------------------------------------------------------------------------------
@@ -37,55 +113,6 @@ public class Hotel {
     public String listarHabitacionesOcupadasMotivo(EstadoHabitacion motivo) {
         return reservas.listarHabitacionesOcupadasMotivo(motivo);
     }
-    // funcion para crear un pasajero y comprobar
-    public Pasajero crearPasajero() {
-        Scanner scanner = new Scanner(System.in);
-        Pasajero nuevoPasajero = null;
-
-        // Continuar pidiendo los datos hasta que se cree un pasajero con un DNI único
-        while (nuevoPasajero == null) {
-            // Solicitar datos al conserje
-            System.out.println("Ingrese el nombre del pasajero:");
-            String nombre = scanner.nextLine();
-
-            System.out.println("Ingrese el apellido del pasajero:");
-            String apellido = scanner.nextLine();
-
-            System.out.println("Ingrese el DNI del pasajero:");
-            String dni = scanner.nextLine();
-
-            // Comprobar si el pasajero ya existe en el sistema
-            boolean pasajeroExistente = false;
-            for (Pasajero pasajero : pasajeros.getElementos().values()) {
-                if (pasajero.getDni().equals(dni)) {
-                    // Si ya existe un pasajero con el mismo DNI, notificar al conserje
-                    System.out.println("El pasajero con DNI " + dni + " ya existe en el sistema. Por favor, ingrese un DNI diferente.");
-                    pasajeroExistente = true;
-                    break; // Salir del ciclo y pedir los datos nuevamente
-                }
-            }
-
-            if (!pasajeroExistente) {
-                // Si el DNI es único, pedir más datos
-                System.out.println("Ingrese el origen del pasajero:");
-                String origen = scanner.nextLine();
-
-                System.out.println("Ingrese el domicilio de origen del pasajero:");
-                String domicilioOrigen = scanner.nextLine();
-
-                // Crear un nuevo objeto Pasajero con los datos proporcionados
-                nuevoPasajero = new Pasajero(nombre, apellido, dni, origen, domicilioOrigen);
-
-                // Almacenar al pasajero en el mapa
-                pasajeros.agregar(nuevoPasajero.getId(), nuevoPasajero);
-
-                // Retornar el objeto Pasajero creado
-                System.out.println("Pasajero creado exitosamente con el ID: " + nuevoPasajero.getId());
-            }
-        }
-        return nuevoPasajero;
-    }
-
 
     //ocupar una habitación en un período determinado (consultando la ocupación y las reservas).
 
@@ -99,24 +126,6 @@ public class Hotel {
         Reserva nueva = new Reserva(idPasajero, fechaReserva, fechaFinReserva, numeroHabtacion);
         String rtdo = reservas.agregar(numeroHabtacion, nueva);
         return rtdo;
-    }
-
-    public String generarReservaConCreacionDePasajero(int numeroHabitacion, LocalDate fechaReserva, LocalDate fechaFinReserva) throws HabitacionInexistenteException, PasajeroInexistenteException {
-        // Verificar si la habitación existe
-        int idPasajero = 0;
-        if (habitaciones.buscar(numeroHabitacion) == null) {
-            throw new HabitacionInexistenteException();
-        }
-
-        // Verificar si el pasajero existe
-        Pasajero pasajero = crearPasajero();
-        // Crear la reserva
-        Reserva nuevaReserva = new Reserva(pasajero.getId(), fechaReserva, fechaFinReserva, numeroHabitacion);
-
-        // Guardar la nueva reserva
-        String resultado = reservas.agregar(numeroHabitacion, nuevaReserva);
-
-        return resultado;
     }
 
     public String eliminarReserva(int numeroHabtacion, int idPasajero, LocalDate fechaReserva, LocalDate fechaFinReserva) throws HabitacionInexistenteException, PasajeroInexistenteException {
@@ -134,16 +143,42 @@ public class Hotel {
     // Cuestiones relacionandas con las habitaciones (Parte concerje) -----------------------------------------------------------------
 
     public String listarHabitaciones() {
-        return habitaciones.listar();
+        StringBuilder mensaje = new StringBuilder();
+        mensaje.append("HABITACIONES").append("\n");
+        mensaje.append(habitaciones.listar());
+        return mensaje.toString();
     }
 
     public String listarPasajeros() {
-        return pasajeros.listar();
+        StringBuilder mensaje = new StringBuilder();
+        mensaje.append("PASAJEROS").append("\n");
+        mensaje.append(pasajeros.listar());
+        return mensaje.toString();
     }
 
     public String listarReservas() {
         return reservas.listar();
     }
+
+    public String listarConserjes() {
+        StringBuilder sb = new StringBuilder();
+        boolean hayConserjes = false; // Variable para verificar si hay conserjes
+
+        for (Usuario usuario : usuarios.getElementos().values()) {
+            if (usuario.getTipoUsuario() == TipoUsuario.CONSERJE) {
+                sb.append(usuario.getNombre()).append("\n");
+                hayConserjes = true; // Si encontramos un conserje, cambiamos el estado
+            }
+        }
+
+        // Si no se han agregado conserjes, agregamos el mensaje
+        if (!hayConserjes) {
+            sb.append("No hay conserjes cargados en el sistema");
+        }
+
+        return sb.toString();
+    }
+
 
     // Método para realizar el check-in completo
     public String realizarCheckInCompleto(String dniPasajero) {
@@ -231,20 +266,56 @@ public class Hotel {
         // Si no encontramos el pasajero con ese DNI
         return "Pasajero no encontrado.";
     }
-
-
     // Cuestiones relacionandas con las habitaciones (Parte admin) -----------------------------------------------------------------
 
-    public String crearHabitacionNueva(Administrador admin, int numero, TipoHabitacion tipoHabitacion, EstadoHabitacion estadoHabitacion) {
+    public String crearHabitacionNueva(int numero, TipoHabitacion tipoHabitacion, EstadoHabitacion estadoHabitacion) {
         if (habitaciones.buscarBoolean(numero)) {
             return "La habitacion ya existe";
         } else {
-            Habitacion HabitacionNueva = admin.crearHabitacion(numero, tipoHabitacion, estadoHabitacion);
+            Habitacion HabitacionNueva = Administrador.crearHabitacion(numero, tipoHabitacion, estadoHabitacion);
             habitaciones.agregar(numero, HabitacionNueva);
             return "Se creo correctamente la habitacion " + numero;
         }
     }
 
+    // Cambiar el estado de una habitación
+    public String cambiarEstadoHabitacion(int numeroHabitacion, EstadoHabitacion nuevoEstado) {
+        Habitacion habitacion = habitaciones.getElementos().get(numeroHabitacion);
+        if (habitacion != null) {
+            habitacion.setEstadoHabitacion(nuevoEstado);
+            return "El estado de la habitación " + numeroHabitacion + " ha sido actualizado a " + nuevoEstado + ".";
+        } else {
+            return "La habitación " + numeroHabitacion + " no existe.";
+        }
+    }
+
+    // Cambiar el tipo de una habitación
+    public String cambiarTipoHabitacion(int numeroHabitacion, TipoHabitacion nuevoTipo) {
+        Habitacion habitacion = habitaciones.getElementos().get(numeroHabitacion);
+        if (habitacion != null) {
+            habitacion.setTipoHabitacion(nuevoTipo);
+            return "El tipo de la habitación " + numeroHabitacion + " ha sido actualizado a " + nuevoTipo + ".";
+        } else {
+            return "La habitación " + numeroHabitacion + " no existe.";
+        }
+    }
+
+    // Cambiar el número de una habitación
+    public String cambiarNumeroHabitacion(int numeroActual, int nuevoNumero) {
+        if (!habitaciones.getElementos().containsKey(numeroActual)) {
+            return "La habitación " + numeroActual + " no existe.";
+        }
+        if (habitaciones.getElementos().containsKey(nuevoNumero)) {
+            return "Ya existe una habitación con el número " + nuevoNumero + ".";
+        }
+
+        // Cambiar el número de la habitación en el mapa
+        Habitacion habitacion = habitaciones.getElementos().remove(numeroActual);
+        habitacion.setNumero(nuevoNumero); // Aquí necesitas un setNumero en la clase Habitacion
+        habitaciones.getElementos().put(nuevoNumero, habitacion);
+
+        return "El número de la habitación ha sido cambiado de " + numeroActual + " a " + nuevoNumero + ".";
+    }
 
     public String getNombre() {
         return nombre;
@@ -276,6 +347,14 @@ public class Hotel {
 
     public void setReservas(GestorDeReservas<Reserva> reservas) {
         this.reservas = reservas;
+    }
+
+    public GestorDeDatos<Usuario> getUsuarios() {
+        return usuarios;
+    }
+
+    public void setUsuarios(GestorDeDatos<Usuario> usuarios) {
+        this.usuarios = usuarios;
     }
 
     @Override

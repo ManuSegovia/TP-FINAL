@@ -22,21 +22,26 @@ public class Administrador extends Usuario {
 
     @Override
     public String toString() {
-        return "Clases.Administrador{" +
-                "contraseña='" + contraseña + '\'' +
+        return "contraseña='" + contraseña + '\'' +
                 ", dni='" + dni + '\'' +
                 ", nombre='" + nombre + '\'' +
-                ", tipoUsuario=" + tipoUsuario +
-                '}';
+                ", tipoUsuario=" + tipoUsuario;
     }
 
-    //metodos para crear
+    //metodos para crear habitacion
 
-    public Habitacion crearHabitacion(int numero, TipoHabitacion tipoHabitacion, EstadoHabitacion estadoHabitacion) {
+    public static Habitacion crearHabitacion(int numero, TipoHabitacion tipoHabitacion, EstadoHabitacion estadoHabitacion) {
         // Crear la nueva habitación
 
         Habitacion nuevaHabitacion = new Habitacion(numero, tipoHabitacion, estadoHabitacion);
 
         return nuevaHabitacion;
     }
+
+    public static Conserje crearConserje (String dni, String nombre)
+    {
+        return new Conserje(dni, nombre);
+    }
+
+
 }
