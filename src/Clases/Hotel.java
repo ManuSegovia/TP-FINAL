@@ -10,7 +10,6 @@ import Exceptions.ListaVaciaException;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Scanner;
 
 public class Hotel {
     //nuevo
@@ -114,6 +113,19 @@ public class Hotel {
         return reservas.listarHabitacionesOcupadasMotivo(motivo);
     }
 
+    public String historialPasajero(String dni) {
+        Pasajero aux = buscarPasajeroPorDni(dni);
+        if (aux == null)
+        {
+            return "El pasajero con dni " + dni + " no existe";
+        }
+        else
+        {
+            return reservas.listarHistorialPasajero(aux.getId());
+        }
+
+    }
+
     //ocupar una habitación en un período determinado (consultando la ocupación y las reservas).
 
     public String generarReserva(int numeroHabtacion, int idPasajero, LocalDate fechaReserva, LocalDate fechaFinReserva) throws HabitacionInexistenteException, PasajeroInexistenteException {
@@ -166,7 +178,7 @@ public class Hotel {
 
         for (Usuario usuario : usuarios.getElementos().values()) {
             if (usuario.getTipoUsuario() == TipoUsuario.CONSERJE) {
-                sb.append(usuario.getNombre()).append("\n");
+                sb.append("Nombre: " + usuario.getNombre() + " " + usuario.getDni()).append("\n");
                 hayConserjes = true; // Si encontramos un conserje, cambiamos el estado
             }
         }
@@ -267,6 +279,23 @@ public class Hotel {
         return "Pasajero no encontrado.";
     }
     // Cuestiones relacionandas con las habitaciones (Parte admin) -----------------------------------------------------------------
+
+    public String crearConserjeNuevo(String dni, String nombre) {
+        if (usuarios.isEmpty()) {
+            Conserje conserje = Administrador.crearConserje(dni, nombre);
+            usuarios.agregar(conserje.id, conserje);
+            return "Se cargo correctamente el conserje " + nombre;
+        } else {
+            for (Map.Entry<Integer, Usuario> entry : usuarios.getElementos().entrySet()) {
+                if (entry.getValue().getDni().equals(dni)) {
+                    return "Ya existe un usuario con dni " + dni;
+                }
+            }
+            Conserje conserje = Administrador.crearConserje(dni, nombre);
+            usuarios.agregar(conserje.getId(), conserje);
+            return "Se cargo correctamente el conserje " + nombre;
+        }
+    }
 
     public String crearHabitacionNueva(int numero, TipoHabitacion tipoHabitacion, EstadoHabitacion estadoHabitacion) {
         if (habitaciones.buscarBoolean(numero)) {

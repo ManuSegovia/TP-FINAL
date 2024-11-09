@@ -8,13 +8,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class GestorDeReservas <T>
-{
+public class GestorDeReservas<T> {
     private Map<Integer, ArrayList<T>> listadoHabitaciones;
 
-    public GestorDeReservas()
-    {
-        this.listadoHabitaciones =new HashMap<>();
+    public GestorDeReservas() {
+        this.listadoHabitaciones = new HashMap<>();
     }
 
     public String agregar(int numeroHabitacion, T elemento) {
@@ -53,7 +51,6 @@ public class GestorDeReservas <T>
     }
 
 
-
     public String eliminar(int key, int id_Pasajero, LocalDate fechaInicio, LocalDate fecha_Fin) {
         // Verificamos si la clave existe en el mapa
         if (listadoHabitaciones.containsKey(key)) {
@@ -74,48 +71,35 @@ public class GestorDeReservas <T>
     }
 
 
-    public String listar()
-    {
-        StringBuilder mensaje=new StringBuilder();
-        if(listadoHabitaciones.isEmpty())
-        {
+    public String listar() {
+        StringBuilder mensaje = new StringBuilder();
+        if (listadoHabitaciones.isEmpty()) {
             return "No hay nada que mostrar";
-        }
-        else
-        {
-            Iterator<Map.Entry<Integer,ArrayList<T>>>iterador= listadoHabitaciones.entrySet().iterator();
-            while (iterador.hasNext())
-            {
-                Map.Entry<Integer,ArrayList<T>> entrada = iterador.next();
-                mensaje= mensaje.append("\n" + "Habitacion: " + entrada.getKey() + "\n");
-                for (T elemento: entrada.getValue())
-                {
-                    mensaje=mensaje.append(elemento.toString()).append("\n");
+        } else {
+            Iterator<Map.Entry<Integer, ArrayList<T>>> iterador = listadoHabitaciones.entrySet().iterator();
+            while (iterador.hasNext()) {
+                Map.Entry<Integer, ArrayList<T>> entrada = iterador.next();
+                mensaje = mensaje.append("\n" + "Habitacion: " + entrada.getKey() + "\n");
+                for (T elemento : entrada.getValue()) {
+                    mensaje = mensaje.append(elemento.toString()).append("\n");
                 }
             }
         }
         return mensaje.toString();
     }
 
-    public String listarHabitacionesOcupadas()
-    {
-        StringBuilder mensaje=new StringBuilder();
-        if(listadoHabitaciones.isEmpty())
-        {
+    public String listarHabitacionesOcupadas() {
+        StringBuilder mensaje = new StringBuilder();
+        if (listadoHabitaciones.isEmpty()) {
             return "No hay nada que mostrar";
-        }
-        else
-        {
-            Iterator<Map.Entry<Integer,ArrayList<T>>>iterador= listadoHabitaciones.entrySet().iterator();
-            while (iterador.hasNext())
-            {
-                Map.Entry<Integer,ArrayList<T>> entrada = iterador.next();
-                mensaje= mensaje.append("\n" + "Habitacion: " + entrada.getKey() + "\n");
-                for (T elemento: entrada.getValue())
-                {
-                    if(entrada.getValue().equals(EstadoHabitacion.OCUPADA))
-                    {
-                        mensaje=mensaje.append(elemento.toString()).append("\n");
+        } else {
+            Iterator<Map.Entry<Integer, ArrayList<T>>> iterador = listadoHabitaciones.entrySet().iterator();
+            while (iterador.hasNext()) {
+                Map.Entry<Integer, ArrayList<T>> entrada = iterador.next();
+                mensaje = mensaje.append("\n" + "Habitacion: " + entrada.getKey() + "\n");
+                for (T elemento : entrada.getValue()) {
+                    if (entrada.getValue().equals(EstadoHabitacion.OCUPADA)) {
+                        mensaje = mensaje.append(elemento.toString()).append("\n");
                     }
                 }
             }
@@ -123,25 +107,18 @@ public class GestorDeReservas <T>
         return mensaje.toString();
     }
 
-    public String listarHabitacionesDisponibles()
-    {
-        StringBuilder mensaje=new StringBuilder();
-        if(listadoHabitaciones.isEmpty())
-        {
+    public String listarHabitacionesDisponibles() {
+        StringBuilder mensaje = new StringBuilder();
+        if (listadoHabitaciones.isEmpty()) {
             return "No hay nada que mostrar";
-        }
-        else
-        {
-            Iterator<Map.Entry<Integer,ArrayList<T>>>iterador= listadoHabitaciones.entrySet().iterator();
-            while (iterador.hasNext())
-            {
-                Map.Entry<Integer,ArrayList<T>> entrada = iterador.next();
-                mensaje= mensaje.append("\n" + "Habitacion: " + entrada.getKey() + "\n");
-                for (T elemento: entrada.getValue())
-                {
-                    if(entrada.getValue().equals(EstadoHabitacion.DISPONIBLE))
-                    {
-                        mensaje=mensaje.append(elemento.toString()).append("\n");
+        } else {
+            Iterator<Map.Entry<Integer, ArrayList<T>>> iterador = listadoHabitaciones.entrySet().iterator();
+            while (iterador.hasNext()) {
+                Map.Entry<Integer, ArrayList<T>> entrada = iterador.next();
+                mensaje = mensaje.append("\n" + "Habitacion: " + entrada.getKey() + "\n");
+                for (T elemento : entrada.getValue()) {
+                    if (entrada.getValue().equals(EstadoHabitacion.DISPONIBLE)) {
+                        mensaje = mensaje.append(elemento.toString()).append("\n");
                     }
                 }
             }
@@ -149,27 +126,19 @@ public class GestorDeReservas <T>
         return mensaje.toString();
     }
 
-    public String listarHabitacionesOcupadasMotivo(EstadoHabitacion estadoHabitacion)
-    {
-        StringBuilder mensaje=new StringBuilder();
-        if(listadoHabitaciones.isEmpty())
-        {
+    public String listarHabitacionesOcupadasMotivo(EstadoHabitacion estadoHabitacion) {
+        StringBuilder mensaje = new StringBuilder();
+        if (listadoHabitaciones.isEmpty()) {
             return "No hay nada que mostrar";
-        }
-        else
-        {
-            Iterator<Map.Entry<Integer,ArrayList<T>>>iterador= listadoHabitaciones.entrySet().iterator();
-            while (iterador.hasNext())
-            {
-                Map.Entry<Integer,ArrayList<T>> entrada = iterador.next();
-                mensaje= mensaje.append("\n" + "Habitacion: " + entrada.getKey() + "\n");
-                for (T elemento: entrada.getValue())
-                {
-                    if(entrada.getValue().equals(EstadoHabitacion.OCUPADA))
-                    {
-                        if(entrada.getValue().equals(estadoHabitacion))
-                        {
-                            mensaje=mensaje.append("").append(elemento.toString()).append("\n");
+        } else {
+            Iterator<Map.Entry<Integer, ArrayList<T>>> iterador = listadoHabitaciones.entrySet().iterator();
+            while (iterador.hasNext()) {
+                Map.Entry<Integer, ArrayList<T>> entrada = iterador.next();
+                mensaje = mensaje.append("\n" + "Habitacion: " + entrada.getKey() + "\n");
+                for (T elemento : entrada.getValue()) {
+                    if (entrada.getValue().equals(EstadoHabitacion.OCUPADA)) {
+                        if (entrada.getValue().equals(estadoHabitacion)) {
+                            mensaje = mensaje.append("").append(elemento.toString()).append("\n");
                         }
                     }
                 }
@@ -202,14 +171,11 @@ public class GestorDeReservas <T>
         }
     }
 
-    public int buscar(int key , T elemento)
-    {
+    public int comparar(int key, T elemento) {
         Reserva buscar = (Reserva) elemento;
-        ArrayList <Reserva> reservas = (ArrayList<Reserva>) listadoHabitaciones.get(key);
-        for (int i = 0 ; i < reservas.size() ; i++)
-        {
-            if (reservas.get(i).equals(buscar))
-            {
+        ArrayList<Reserva> reservas = (ArrayList<Reserva>) listadoHabitaciones.get(key);
+        for (int i = 0; i < reservas.size(); i++) {
+            if (reservas.get(i).equals(buscar)) {
                 return i;
             }
         }
@@ -237,6 +203,27 @@ public class GestorDeReservas <T>
         return null;
     }
 
+    public String listarHistorialPasajero(int idPasajero) {
+        StringBuilder mensaje = new StringBuilder();
+        if (listadoHabitaciones.isEmpty()) {
+            return "No hay nada que mostrar";
+        } else {
+            Iterator<Map.Entry<Integer, ArrayList<T>>> iterador = listadoHabitaciones.entrySet().iterator();
+            while (iterador.hasNext()) {
+                Map.Entry<Integer, ArrayList<T>> entrada = iterador.next();
 
+                for (T elemento : entrada.getValue()) {
+                    if (elemento instanceof Reserva) {
+                        Reserva reserva = (Reserva) elemento;
+                        if (reserva.getIdPasajero() == idPasajero) {
+                            mensaje = mensaje.append("").append(elemento.toString()).append("\n");
+                        }
+                    }
+
+                }
+            }
+        }
+        return mensaje.toString();
+    }
     //consultar listado de de habitaciones actualmente ocupadas
 }

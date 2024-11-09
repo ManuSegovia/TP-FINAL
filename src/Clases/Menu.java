@@ -26,8 +26,8 @@ public class Menu {
 
         return dni; // Retorna el DNI ingresado como String
     }
-    public static String pedirTexto ()
-    {
+
+    public static String pedirTexto() {
         Scanner scanner = new Scanner(System.in);
         return scanner.nextLine();
     }
@@ -61,6 +61,7 @@ public class Menu {
             System.out.println("5- Modificar Pasajero");
             System.out.println("6- Modificar Concerje");
             System.out.println("7- Modificar datos propios");
+            System.out.println("8- Crear conserje");
             System.out.println("0- Cerrar sesión");
 
             System.out.print("Ingrese el número de la opción: ");
@@ -85,6 +86,8 @@ public class Menu {
                         return 6; // Opción para modificar conserje
                     case 7:
                         return 7; // Opción para modificar datos propios
+                    case 8:
+                        return 8;
                     case 0:
                         return 0; // Opción para cerrar sesión
                     default:
@@ -98,6 +101,7 @@ public class Menu {
 
         return -1; // Retornamos -1 si el bucle termina inesperadamente
     }
+
     public static int menuModificarPasajero() {
         Scanner scanner = new Scanner(System.in);
         int opcion = -1;
@@ -209,7 +213,67 @@ public class Menu {
         return -1;
     }
 
+    public static int mostrarMenuConserje() {
+        Scanner scanner = new Scanner(System.in);
+        int opcion = -1; // Inicializamos la opción con un valor no válido
 
+        // Bucle para mostrar el menú continuamente hasta que el usuario elija cerrar sesión
+        while (opcion != 0) {
+            // Imprimir el menú dentro del bucle
+            System.out.println("\nSeleccione la función a realizar:");
+            System.out.println("1- Listar habitaciones actualmente ocupadas");
+            System.out.println("2- Listar habitaciones disponibles");
+            System.out.println("3- Listar habitaciones ocupadas por motivo");
+            System.out.println("4- Ver historial de pasajero");
+            System.out.println("5- Generar reserva");
+            System.out.println("6- Eliminar reserva");
+            System.out.println("7- Listar todas las habitaciones");
+            System.out.println("8- Listar reservas");
+            System.out.println("9- Realizar check-in");
+            System.out.println("10- Realizar check-out");
+            System.out.println("0- Cerrar sesión");
+
+            System.out.print("Ingrese el número de la opción: ");
+
+            // Verificamos si el usuario ingresa un número entero válido
+            if (scanner.hasNextInt()) {
+                opcion = scanner.nextInt();  // Leemos la opción
+                scanner.nextLine();  // Limpiar el buffer para evitar problemas con entradas futuras
+
+                switch (opcion) {
+                    case 1:
+                        return 1;
+                    case 2:
+                        return 2;
+                    case 3:
+                        return 3;
+                    case 4:
+                        return 4;
+                    case 5:
+                        return 5;
+                    case 6:
+                        return 6;
+                    case 7:
+                        return 7;
+                    case 8:
+                        return 8;
+                    case 9:
+                        return 9;
+                    case 10:
+                        return 10;
+                    case 0:
+                        return 0;
+                    default:
+                        System.out.println("Opción no válida. Intente nuevamente.");
+                }
+            } else {
+                System.out.println("Por favor, ingrese un número válido.");
+                scanner.nextLine(); // Limpiar el buffer si no es un número entero
+            }
+        }
+
+        return -1;
+    }
 
 
 }

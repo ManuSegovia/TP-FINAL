@@ -1,10 +1,6 @@
 import Clases.*;
 import Enums.EstadoHabitacion;
-import Enums.TipoHabitacion;
 import Exceptions.ListaVaciaException;
-
-import java.time.LocalDate;
-import java.util.Scanner;
 
 public class Main {
     //saber usar hash y set y mapas para el parcial
@@ -35,7 +31,7 @@ public class Main {
         int opcionUsuario = -2;
         while (opcionUsuario != 0) {
             // se le solicita el dni
-            String dniIngresado = Menu.pedirDni();
+            String dniIngresado = Menu.pedirDniInicio();
             // se corrobora si el dni corresponde a un administrador o a un concerje
             opcionUsuario = mihotel.buscarUsuarioPorDni(dniIngresado);
             switch (opcionUsuario) {
@@ -51,7 +47,7 @@ public class Main {
                                 funcion = Menu.mostrarMenuAdministrador();
                                 switch (funcion) {
                                     case 1:
-                                        SolicitudDatosCrearEntidades.crearHabitacion(mihotel);
+                                        SolicitudDatos.crearHabitacion(mihotel);
                                         break;
                                     case 2:
                                         System.out.println(mihotel.listarHabitaciones());
@@ -204,6 +200,9 @@ public class Main {
                                             mihotel.getUsuarios().agregar(administrador.getId(), administrador);
                                         }
                                         break;
+                                    case 8:
+                                        SolicitudDatos.crearConserje(mihotel);
+                                        break;
                                     case 0:
                                         System.out.println("Cerrando seccion...");
                                         break;
@@ -219,8 +218,62 @@ public class Main {
                     }
                     break;
                 case 2:
+                    int funcion = -1;
                     // Si el usuario es conserje, llamamos al menú de conserje
                     System.out.println("Accediendo al menú de Conserje...");
+                    while (funcion != 0)
+                    {
+                        funcion = Menu.mostrarMenuConserje();
+                        switch (funcion)
+                        {
+                            case 1:
+                                System.out.println(mihotel.listarHabitacionesActualmenteOcupadas());
+                                break;
+                            case 2:
+                                System.out.println(mihotel.listarHabitacionesDisponibles());
+                                break;
+                            case 3:
+                                EstadoHabitacion estado = SolicitudDatos.obtenerEstadoHabitacion();
+                                System.out.println(mihotel.listarHabitacionesOcupadasMotivo(estado));
+                                break;
+                            case 4:
+                                // listar listado de reservas asosiadas a un pasajero
+                                System.out.println("Ingrese tu nuevo dni:");
+                                String nuevoDni = Menu.pedirDni();
+                                System.out.println(mihotel.historialPasajero(nuevoDni));
+                                break;
+                            case 5:
+                                // generar reserva
+                                System.out.println(SolicitudDatos.generarReserva(mihotel));
+                                break;
+                            case 6:
+                                // eliminar reserva
+                                System.out.println(SolicitudDatos.eliminarReserva(mihotel));
+                                break;
+                            case 7:
+                                // listar todas las habitaciones
+                                System.out.println(mihotel.listarHabitaciones());
+                                break;
+                            case 8:
+                                // listar todas las reservas
+                                System.out.println(mihotel.listarReservas());
+                                break;
+                            case 9:
+                                //Realizar check in
+                                String dni = Menu.pedirDni();
+                                System.out.println(mihotel.realizarCheckInCompleto(dni));
+                                break;
+                            case 10:
+                                //Realizar check out
+                                String dni2 = Menu.pedirDni();
+                                System.out.println(mihotel.realizarCheckInCompleto(dni2));
+                                break;
+                            case 0:
+                                System.out.println("Cerrando seccion...");
+                                break;
+                        }
+                    }
+
                     break;
                 case -1:
                     System.out.println("El dni no corresponde con ningun usuario");
