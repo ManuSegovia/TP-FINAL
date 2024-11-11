@@ -1,5 +1,6 @@
 package Clases;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Menu {
@@ -30,6 +31,11 @@ public class Menu {
     public static String pedirTexto() {
         Scanner scanner = new Scanner(System.in);
         return scanner.nextLine();
+    }
+
+    public static int pedirEntero() throws InputMismatchException {
+        Scanner scanner = new Scanner(System.in);
+        return scanner.nextInt();
     }
 
     public static String pedirDni() {
@@ -231,6 +237,8 @@ public class Menu {
             System.out.println("8- Listar reservas");
             System.out.println("9- Realizar check-in");
             System.out.println("10- Realizar check-out");
+            System.out.println("11- Crear pasajero");
+            System.out.println("12- Generar reserva con creacion de pasajero");
             System.out.println("0- Cerrar sesión");
 
             System.out.print("Ingrese el número de la opción: ");
@@ -261,6 +269,10 @@ public class Menu {
                         return 9;
                     case 10:
                         return 10;
+                    case 11:
+                        return 11;
+                    case 12:
+                        return 12;
                     case 0:
                         return 0;
                     default:

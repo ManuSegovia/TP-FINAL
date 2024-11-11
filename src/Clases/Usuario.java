@@ -1,10 +1,12 @@
 package Clases;
 
 import Enums.TipoUsuario;
+import Interfaces.JSONable;
+import org.json.JSONObject;
 
 import java.util.Objects;
 
-public abstract class Usuario
+public abstract class Usuario implements JSONable
 {
     protected int id;
     protected String dni;
@@ -74,5 +76,14 @@ public abstract class Usuario
                 '}';
     }
 
+    // Método toJSON para convertir a JSON
+    public JSONObject toJSON() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", id);
+        jsonObject.put("dni", dni);
+        jsonObject.put("nombre", nombre);
+        jsonObject.put("tipoUsuario", tipoUsuario.toString()); // Convierte el TipoUsuario a su nombre
+        return jsonObject;
+    }
 
 }

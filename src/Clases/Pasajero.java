@@ -1,8 +1,10 @@
 package Clases;
-
+import Interfaces.JSONable;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import java.util.Objects;
 
-public class Pasajero
+public class Pasajero implements JSONable
 {
     private int id;
     private static int cont=1;
@@ -99,5 +101,17 @@ public class Pasajero
                 ", dni='" + dni + '\'' +
                 ", origen='" + origen + '\'' +
                 ", domicilioOrigen='" + domicilioOrigen;
+    }
+
+    // Método toJSON para convertir a JSON
+    public JSONObject toJSON() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", id);
+        jsonObject.put("nombre", nombre);
+        jsonObject.put("apellido", apellido);
+        jsonObject.put("dni", dni);
+        jsonObject.put("origen", origen);
+        jsonObject.put("domicilioOrigen", domicilioOrigen);
+        return jsonObject;
     }
 }

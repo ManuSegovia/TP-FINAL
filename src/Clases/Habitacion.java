@@ -2,12 +2,13 @@ package Clases;
 
 import Enums.EstadoHabitacion;
 import Enums.TipoHabitacion;
+import Interfaces.JSONable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Objects;
 
-public class Habitacion
+public class Habitacion implements JSONable
 {
     private int numero;
     private TipoHabitacion tipoHabitacion;//Creo que esta bien hacerlo enum

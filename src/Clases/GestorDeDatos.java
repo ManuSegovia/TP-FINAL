@@ -1,12 +1,16 @@
 package Clases;
 
+import Interfaces.JSONable;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 
 //lo cambie de array a map todo
-public class GestorDeDatos<T>
+public class GestorDeDatos<T extends JSONable> implements JSONable
 {
     private Map<Integer,T> elementos;
 
@@ -80,8 +84,24 @@ public class GestorDeDatos<T>
 
     @Override
     public String toString() {
-        return "Clases.GestorDeDatos{" +
+        return "GestorDeDatos{" +
                 "elementos=" + elementos +
                 '}';
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+
+        // Itera sobre el mapa y convierte cada elemento a JSON
+        for (Map.Entry<Integer, T> entry : elementos.entrySet()) {
+            JSONObject elementJson = entry.getValue().toJSON();  // Convierte el objeto a JSON
+            elementJson.put("id", entry.getKey());  // Añade el ID al objeto JSON
+            jsonArray.put(elementJson);  // Agrega el objeto JSON al array
+        }
+
+        jsonObject.put("elementos", jsonArray);  // Agrega el array de elementos al objeto JSON
+        return jsonObject;
     }
 }

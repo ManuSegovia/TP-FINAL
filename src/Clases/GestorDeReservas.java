@@ -1,4 +1,6 @@
 package Clases;
+
+import Exceptions.ListaVaciaException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import Enums.EstadoHabitacion;
@@ -72,81 +74,32 @@ public class GestorDeReservas<T> {
     }
 
 
-    public String listar() {
+    public String listar() throws ListaVaciaException{
         StringBuilder mensaje = new StringBuilder();
         if (listadoHabitaciones.isEmpty()) {
-            return "No hay nada que mostrar";
+            throw new ListaVaciaException("Actualemente no hay reservar registradas");
         } else {
             Iterator<Map.Entry<Integer, ArrayList<T>>> iterador = listadoHabitaciones.entrySet().iterator();
             while (iterador.hasNext()) {
                 Map.Entry<Integer, ArrayList<T>> entrada = iterador.next();
-                mensaje = mensaje.append("\n" + "Habitacion: " + entrada.getKey() + "\n");
-                for (T elemento : entrada.getValue()) {
-                    mensaje = mensaje.append(elemento.toString()).append("\n");
-                }
-            }
-        }
-        return mensaje.toString();
-    }
+                if (entrada.getValue().isEmpty()) {
 
-    public String listarHabitacionesOcupadas() {
-        StringBuilder mensaje = new StringBuilder();
-        if (listadoHabitaciones.isEmpty()) {
-            return "No hay nada que mostrar";
-        } else {
-            Iterator<Map.Entry<Integer, ArrayList<T>>> iterador = listadoHabitaciones.entrySet().iterator();
-            while (iterador.hasNext()) {
-                Map.Entry<Integer, ArrayList<T>> entrada = iterador.next();
-                mensaje = mensaje.append("\n" + "Habitacion: " + entrada.getKey() + "\n");
-                for (T elemento : entrada.getValue()) {
-                    if (entrada.getValue().equals(EstadoHabitacion.OCUPADA)) {
+                } else {
+                    mensaje = mensaje.append("\n" + "Habitacion: " + entrada.getKey() + "\n");
+                    for (T elemento : entrada.getValue()) {
                         mensaje = mensaje.append(elemento.toString()).append("\n");
                     }
                 }
-            }
-        }
-        return mensaje.toString();
-    }
+                if (mensaje.isEmpty())
+                {
 
-    public String listarHabitacionesDisponibles() {
-        StringBuilder mensaje = new StringBuilder();
-        if (listadoHabitaciones.isEmpty()) {
-            return "No hay nada que mostrar";
-        } else {
-            Iterator<Map.Entry<Integer, ArrayList<T>>> iterador = listadoHabitaciones.entrySet().iterator();
-            while (iterador.hasNext()) {
-                Map.Entry<Integer, ArrayList<T>> entrada = iterador.next();
-                mensaje = mensaje.append("\n" + "Habitacion: " + entrada.getKey() + "\n");
-                for (T elemento : entrada.getValue()) {
-                    if (entrada.getValue().equals(EstadoHabitacion.DISPONIBLE)) {
-                        mensaje = mensaje.append(elemento.toString()).append("\n");
-                    }
+                    throw new ListaVaciaException("Actualemente no hay reservar registradas");
                 }
             }
         }
         return mensaje.toString();
     }
 
-    public String listarHabitacionesOcupadasMotivo(EstadoHabitacion estadoHabitacion) {
-        StringBuilder mensaje = new StringBuilder();
-        if (listadoHabitaciones.isEmpty()) {
-            return "No hay nada que mostrar";
-        } else {
-            Iterator<Map.Entry<Integer, ArrayList<T>>> iterador = listadoHabitaciones.entrySet().iterator();
-            while (iterador.hasNext()) {
-                Map.Entry<Integer, ArrayList<T>> entrada = iterador.next();
-                mensaje = mensaje.append("\n" + "Habitacion: " + entrada.getKey() + "\n");
-                for (T elemento : entrada.getValue()) {
-                    if (entrada.getValue().equals(EstadoHabitacion.OCUPADA)) {
-                        if (entrada.getValue().equals(estadoHabitacion)) {
-                            mensaje = mensaje.append("").append(elemento.toString()).append("\n");
-                        }
-                    }
-                }
-            }
-        }
-        return mensaje.toString();
-    }
 
     public boolean habitacionDisponibleFechas(int key, LocalDate inicioReserva, LocalDate finReserva) {
         // Verifica si la clave de la habitación existe en el listado
@@ -183,7 +136,7 @@ public class GestorDeReservas<T> {
         return -1;
     }
 
-    public Reserva buscarReservaPorPasajero(int idPasajero) {
+    public Reserva buscarReservaPorPasajero(int idPasajero, int habitacion) {
         // Iterar sobre el mapa de habitaciones
         for (Map.Entry<Integer, ArrayList<T>> entry : listadoHabitaciones.entrySet()) {
             // Obtener la lista de reservas para esta habitación
@@ -193,7 +146,7 @@ public class GestorDeReservas<T> {
             for (T reserva : reservas) {
                 if (reserva instanceof Reserva) {
                     Reserva reservaActual = (Reserva) reserva;
-                    if (reservaActual.getIdPasajero() == idPasajero) {
+                    if (reservaActual.getIdPasajero() == idPasajero && reservaActual.getNumeroHabitacion() == habitacion) {
                         // Si encontramos la reserva, la retornamos
                         return reservaActual;
                     }
@@ -207,7 +160,7 @@ public class GestorDeReservas<T> {
     public String listarHistorialPasajero(int idPasajero) {
         StringBuilder mensaje = new StringBuilder();
         if (listadoHabitaciones.isEmpty()) {
-            return "No hay nada que mostrar";
+            return "No hay reservas registradas a este pasajero";
         } else {
             Iterator<Map.Entry<Integer, ArrayList<T>>> iterador = listadoHabitaciones.entrySet().iterator();
             while (iterador.hasNext()) {
@@ -223,27 +176,42 @@ public class GestorDeReservas<T> {
 
                 }
             }
+            if (mensaje.isEmpty()) {
+                return "El pasajero no tiene ninguna reserva asosiada";
+            }
         }
         return mensaje.toString();
     }
 
 
-    // Método para generar JSON con todas las reservas
-    public JSONObject reservasToJSON() {
-        JSONObject jsonObject = new JSONObject();
-        JSONArray jsonArray = new JSONArray();
 
+    public JSONObject toJSON() {
+        JSONObject jsonObject = new JSONObject();
+
+        // Convertir el Map a un JSONArray
+        JSONArray reservasJSON = new JSONArray();
         for (Map.Entry<Integer, ArrayList<T>> entry : listadoHabitaciones.entrySet()) {
-            for (T elemento : entry.getValue()) {
-                if (elemento instanceof Reserva) {
-                    Reserva reserva = (Reserva) elemento;
-                    jsonArray.put(reserva.toJSON());  // Usa el método toJSON de Reserva
+            JSONObject reservaListJSON = new JSONObject();
+            reservaListJSON.put("id", entry.getKey()); // La clave del Map
+
+            // Convertir la lista de reservas a un JSONArray
+            JSONArray reservasArrayJSON = new JSONArray();
+            for (T reserva : entry.getValue()) {
+                if (reserva instanceof Reserva) {
+                    reservasArrayJSON.put(((Reserva) reserva).toJSON()); // Asumiendo que la clase Reserva tiene un método toJSON()
                 }
+                // Si T es otro tipo de objeto, deberás agregar su respectiva serialización.
             }
+            reservaListJSON.put("reservas", reservasArrayJSON);
+            reservasJSON.put(reservaListJSON);
         }
 
-        jsonObject.put("reservas", jsonArray);  // Agrega el array al objeto principal
+        jsonObject.put("listadoHabitaciones", reservasJSON);
         return jsonObject;
+    }
+
+    public Map<Integer, ArrayList<T>> getElementos() {
+        return listadoHabitaciones;
     }
 
 

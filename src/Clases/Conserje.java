@@ -16,28 +16,11 @@ public class Conserje extends Usuario {
                 ", tipoUsuario=" + tipoUsuario;
     }
 
-    // Método para convertir un Conserje a JSON
+    // Método toJSON para convertir a JSON
+    @Override
     public JSONObject toJSON() {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("dni", dni);
-        jsonObject.put("nombre", nombre);
-        jsonObject.put("tipoUsuario", tipoUsuario.toString());  // Convierte el TipoUsuario a su nombre
-        return jsonObject;
+        JSONObject jsonObject = super.toJSON(); // Obtiene el JSON de la clase base Usuario
+        return jsonObject; // Devuelve el JSON del objeto
     }
 
-    // Método para almacenar varios conserjes en formato JSON
-    public static JSONObject conserjesToJSON(Conserje... conserjes) {
-        JSONObject jsonObject = new JSONObject();
-        JSONArray jsonArray = new JSONArray();
-
-        // Agregar cada conserje al JSONArray
-        for (Conserje conserje : conserjes) {
-            jsonArray.put(conserje.toJSON());  // Agregar el conserje convertido a JSON
-        }
-
-        jsonObject.put("conserjes", jsonArray);  // Colocar el array dentro del objeto JSON
-        return jsonObject;
-    }
-
-    //checkiout, checkin
 }

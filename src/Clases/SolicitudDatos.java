@@ -2,6 +2,8 @@ package Clases;
 
 import Enums.EstadoHabitacion;
 import Enums.TipoHabitacion;
+import Exceptions.HabitacionInexistenteException;
+import Exceptions.PasajeroInexistenteException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -11,7 +13,7 @@ import java.util.Scanner;
 
 public class SolicitudDatos {
 
-    public static Pasajero crearPasajero(Hotel mihotel) {
+    public static void crearPasajero(Hotel mihotel) {
         Scanner scanner = new Scanner(System.in);
         Pasajero nuevoPasajero = null;
 
@@ -54,7 +56,6 @@ public class SolicitudDatos {
             System.out.println("Pasajero creado exitosamente con el ID: " + nuevoPasajero.getId());
 
         }
-        return nuevoPasajero;
     }
 
 
@@ -187,81 +188,93 @@ public class SolicitudDatos {
     }
 
     // Método estático para pedir datos de la reserva
-    public static Reserva pedirDatosReserva() {
+    public static Reserva pedirDatosReserva (Hotel mihotel) {
         Scanner scanner = new Scanner(System.in);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        int idPasajero = 0;
+        String DniPasajero = null;
+        Pasajero pasajero = null;
         LocalDate fechaInicio = null;
         LocalDate fechaFin = null;
         int numeroHabitacion = 0;
 
-        // Pedir ID del pasajero hasta que sea un entero válido
-        boolean idPasajeroValido = false;
-        while (!idPasajeroValido) {
-            System.out.println("Ingrese el ID del pasajero:");
-            try {
-                idPasajero = scanner.nextInt();
-                idPasajeroValido = true; // Si es válido, salimos del bucle
-                scanner.nextLine(); // Limpiar el buffer
-            } catch (InputMismatchException e) {
-                System.out.println("ID no válido. Intente nuevamente.");
-                scanner.nextLine(); // Limpiar el buffer si hubo error
+        boolean DNIpasajeroValido = false;
+        while (!DNIpasajeroValido) {
+            // Pedir ID del pasajero hasta que sea un entero válido
+            System.out.println("Ingrese el DNI del pasajero:");
+            DniPasajero = scanner.nextLine();
+            pasajero = mihotel.buscarPasajeroPorDni(DniPasajero);
+            if (pasajero != null)
+            {
+                DNIpasajeroValido = true;
+            }
+            else
+            {
+                System.out.println("DNI incorrecto. Ingreselo nuevamente");
             }
         }
 
-        // Pedir fecha de inicio hasta que sea una fecha válida
-        boolean fechaInicioValida = false;
-        while (!fechaInicioValida) {
-            System.out.println("Ingrese la fecha de inicio de la reserva (formato yyyy-MM-dd):");
-            try {
-                fechaInicio = LocalDate.parse(scanner.nextLine(), formatter);
-                fechaInicioValida = true; // Si es válida, salimos del bucle
-            } catch (DateTimeParseException e) {
-                System.out.println("Formato de fecha no válido. Intente nuevamente.");
-            }
-        }
 
-        // Pedir fecha de fin hasta que sea una fecha válida
-        boolean fechaFinValida = false;
-        while (!fechaFinValida) {
-            System.out.println("Ingrese la fecha de fin de la reserva (formato yyyy-MM-dd):");
-            try {
-                fechaFin = LocalDate.parse(scanner.nextLine(), formatter);
-                fechaFinValida = true; // Si es válida, salimos del bucle
-            } catch (DateTimeParseException e) {
-                System.out.println("Formato de fecha no válido. Intente nuevamente.");
-            }
-        }
+    // Pedir fecha de inicio hasta que sea una fecha válida
+    boolean fechaInicioValida = false;
+        while(!fechaInicioValida)
 
-        // Pedir número de habitación hasta que sea un entero válido
-        boolean numeroHabitacionValido = false;
-        while (!numeroHabitacionValido) {
-            System.out.println("Ingrese el número de la habitación:");
-            try {
-                numeroHabitacion = scanner.nextInt();
-                numeroHabitacionValido = true; // Si es válido, salimos del bucle
-            } catch (InputMismatchException e) {
-                System.out.println("Número de habitación no válido. Intente nuevamente.");
-                scanner.nextLine(); // Limpiar el buffer si hubo error
-            }
+    {
+        System.out.println("Ingrese la fecha de inicio de la reserva (formato yyyy-MM-dd):");
+        try {
+            fechaInicio = LocalDate.parse(scanner.nextLine(), formatter);
+            fechaInicioValida = true; // Si es válida, salimos del bucle
+        } catch (DateTimeParseException e) {
+            System.out.println("Formato de fecha no válido. Intente nuevamente.");
         }
-        return new Reserva(idPasajero, fechaInicio, fechaFin, numeroHabitacion);
     }
 
-    // Método para generar una reserva
-    public static String generarReserva(Hotel mihotel) {
-        Reserva aux = pedirDatosReserva();
-        System.out.println("Generando nueva reserva...");
-        return mihotel.generarReserva(aux.getNumeroHabitacion(), aux.getIdPasajero(), aux.getFechaInicio(), aux.getFechaFin());
+    // Pedir fecha de fin hasta que sea una fecha válida
+    boolean fechaFinValida = false;
+        while(!fechaFinValida)
+
+    {
+        System.out.println("Ingrese la fecha de fin de la reserva (formato yyyy-MM-dd):");
+        try {
+            fechaFin = LocalDate.parse(scanner.nextLine(), formatter);
+            fechaFinValida = true; // Si es válida, salimos del bucle
+        } catch (DateTimeParseException e) {
+            System.out.println("Formato de fecha no válido. Intente nuevamente.");
+        }
     }
 
-    // Método para eliminar una reserva
-    public static String eliminarReserva(Hotel mihotel) {
-        Reserva aux = pedirDatosReserva();
-        System.out.println("Eliminado reserva...");
-        return mihotel.eliminarReserva(aux.getNumeroHabitacion(), aux.getIdPasajero(), aux.getFechaInicio(), aux.getFechaFin());
+    // Pedir número de habitación hasta que sea un entero válido
+    boolean numeroHabitacionValido = false;
+        while(!numeroHabitacionValido)
+
+    {
+        System.out.println("Ingrese el número de la habitación:");
+        try {
+            numeroHabitacion = scanner.nextInt();
+            numeroHabitacionValido = true; // Si es válido, salimos del bucle
+        } catch (InputMismatchException e) {
+            System.out.println("Número de habitación no válido. Intente nuevamente.");
+            scanner.nextLine(); // Limpiar el buffer si hubo error
+        }
     }
+        return new
+
+    Reserva(pasajero.getId(), fechaInicio, fechaFin, numeroHabitacion);
+}
+
+// Método para generar una reserva
+public static String generarReserva(Hotel mihotel) throws HabitacionInexistenteException, PasajeroInexistenteException {
+    Reserva aux = pedirDatosReserva(mihotel);
+    System.out.println("Generando nueva reserva...");
+    return mihotel.generarReserva(aux.getNumeroHabitacion(), aux.getIdPasajero(), aux.getFechaInicio(), aux.getFechaFin());
+}
+
+// Método para eliminar una reserva
+public static String eliminarReserva(Hotel mihotel) {
+    Reserva aux = pedirDatosReserva(mihotel);
+    System.out.println("Eliminado reserva...");
+    return mihotel.eliminarReserva(aux.getNumeroHabitacion(), aux.getIdPasajero(), aux.getFechaInicio(), aux.getFechaFin());
+}
 
 
 }

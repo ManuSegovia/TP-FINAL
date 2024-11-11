@@ -31,13 +31,11 @@ public class Administrador extends Usuario {
     }
 
 
-    // Método para convertir a JSON
+    // Método toJSON para convertir a JSON
+    @Override
     public JSONObject toJSON() {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("dni", dni);
-        jsonObject.put("nombre", nombre);
-        jsonObject.put("contraseña", contraseña);
-        jsonObject.put("tipoUsuario", tipoUsuario.toString());  // Convierte el TipoUsuario a su nombre
+        JSONObject jsonObject = super.toJSON(); // Obtiene el JSON del método de la clase base
+        jsonObject.put("contraseña", contraseña); // Añade la contraseña
         return jsonObject;
     }
 
