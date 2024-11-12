@@ -239,6 +239,7 @@ public class Menu {
             System.out.println("10- Realizar check-out");
             System.out.println("11- Crear pasajero");
             System.out.println("12- Generar reserva con creacion de pasajero");
+            System.out.println("13- Generar una reserva de mantenimiento");
             System.out.println("0- Cerrar sesión");
 
             System.out.print("Ingrese el número de la opción: ");
@@ -273,6 +274,8 @@ public class Menu {
                         return 11;
                     case 12:
                         return 12;
+                    case 13:
+                        return 13;
                     case 0:
                         return 0;
                     default:
@@ -286,6 +289,4 @@ public class Menu {
 
         return -1;
     }
-
-
 }

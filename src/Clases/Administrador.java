@@ -24,10 +24,10 @@ public class Administrador extends Usuario {
 
     @Override
     public String toString() {
-        return "contraseña='" + contraseña + '\'' +
-                ", dni='" + dni + '\'' +
-                ", nombre='" + nombre + '\'' +
-                ", tipoUsuario=" + tipoUsuario;
+        return "Contraseña:'" + contraseña + '\'' +
+                ", Dni:'" + dni + '\'' +
+                ", Nombre:'" + nombre + '\'' +
+                ", TipoUsuario:" + tipoUsuario;
     }
 
 

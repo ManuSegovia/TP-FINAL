@@ -6,10 +6,7 @@ import org.json.JSONObject;
 import Enums.EstadoHabitacion;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class GestorDeReservas<T> {
     private Map<Integer, ArrayList<T>> listadoHabitaciones;
@@ -214,6 +211,32 @@ public class GestorDeReservas<T> {
         return listadoHabitaciones;
     }
 
+    public Map<Integer, ArrayList<T>> getListadoHabitaciones() {
+        return listadoHabitaciones;
+    }
+
+    public void setListadoHabitaciones(Map<Integer, ArrayList<T>> listadoHabitaciones) {
+        this.listadoHabitaciones = listadoHabitaciones;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GestorDeReservas<?> that = (GestorDeReservas<?>) o;
+        return Objects.equals(listadoHabitaciones, that.listadoHabitaciones);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(listadoHabitaciones);
+    }
+
+    @Override
+    public String toString() {
+        return "GestorDeReservas:\n" +
+                "ListadoHabitaciones:" + listadoHabitaciones;
+    }
 
     //consultar listado de de habitaciones actualmente ocupadas
 }

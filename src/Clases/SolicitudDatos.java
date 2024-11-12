@@ -259,22 +259,91 @@ public class SolicitudDatos {
     }
         return new
 
-    Reserva(pasajero.getId(), fechaInicio, fechaFin, numeroHabitacion);
+    Reserva(pasajero.getId(), fechaInicio, fechaFin, numeroHabitacion,"habitacion reservada");
 }
 
-// Método para generar una reserva
-public static String generarReserva(Hotel mihotel) throws HabitacionInexistenteException, PasajeroInexistenteException {
-    Reserva aux = pedirDatosReserva(mihotel);
-    System.out.println("Generando nueva reserva...");
-    return mihotel.generarReserva(aux.getNumeroHabitacion(), aux.getIdPasajero(), aux.getFechaInicio(), aux.getFechaFin());
-}
+    // Método estático para pedir datos de la reserva del mantenimiento
+    public static Reserva pedirDatosReservaMantenimiento (Hotel mihotel) {
+        Scanner scanner = new Scanner(System.in);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-// Método para eliminar una reserva
-public static String eliminarReserva(Hotel mihotel) {
-    Reserva aux = pedirDatosReserva(mihotel);
-    System.out.println("Eliminado reserva...");
-    return mihotel.eliminarReserva(aux.getNumeroHabitacion(), aux.getIdPasajero(), aux.getFechaInicio(), aux.getFechaFin());
-}
+        LocalDate fechaInicio = null;
+        LocalDate fechaFin = null;
+        int numeroHabitacion = 0;
+        String descripcion=null;
+
+
+        // Pedir fecha de inicio hasta que sea una fecha válida
+        boolean fechaInicioValida = false;
+        while(!fechaInicioValida)
+
+        {
+            System.out.println("Ingrese la fecha de inicio de la reserva (formato yyyy-MM-dd):");
+            try {
+                fechaInicio = LocalDate.parse(scanner.nextLine(), formatter);
+                fechaInicioValida = true; // Si es válida, salimos del bucle
+            } catch (DateTimeParseException e) {
+                System.out.println("Formato de fecha no válido. Intente nuevamente.");
+            }
+        }
+
+        // Pedir fecha de fin hasta que sea una fecha válida
+        boolean fechaFinValida = false;
+        while(!fechaFinValida)
+
+        {
+            System.out.println("Ingrese la fecha de fin de la reserva (formato yyyy-MM-dd):");
+            try {
+                fechaFin = LocalDate.parse(scanner.nextLine(), formatter);
+                fechaFinValida = true; // Si es válida, salimos del bucle
+            } catch (DateTimeParseException e) {
+                System.out.println("Formato de fecha no válido. Intente nuevamente.");
+            }
+        }
+
+        // Pedir número de habitación hasta que sea un entero válido
+        boolean numeroHabitacionValido = false;
+        while(!numeroHabitacionValido)
+
+        {
+            System.out.println("Ingrese el número de la habitación:");
+            try {
+                numeroHabitacion = scanner.nextInt();
+                numeroHabitacionValido = true; // Si es válido, salimos del bucle
+            } catch (InputMismatchException e) {
+                System.out.println("Número de habitación no válido. Intente nuevamente.");
+                scanner.nextLine(); // Limpiar el buffer si hubo error
+            }
+        }
+
+        System.out.println("Ingrese la descripcion del nmantenimiento:");
+        descripcion = scanner.nextLine();
+
+        return new
+
+                Reserva(-3, fechaInicio, fechaFin, numeroHabitacion,descripcion);
+    }
+
+    // Método para generar una reserva
+    public static String generarReservaMantenimiento(Hotel mihotel) throws HabitacionInexistenteException, PasajeroInexistenteException {
+        Reserva aux = pedirDatosReserva(mihotel);
+        System.out.println("Generando nueva reserva...");
+        return mihotel.generarReserva(aux.getNumeroHabitacion(),-3, aux.getFechaInicio(), aux.getFechaFin(),aux.getDescripcion());
+    }
+
+    // Método para generar una reserva
+    public static String generarReserva(Hotel mihotel) throws HabitacionInexistenteException, PasajeroInexistenteException {
+        Reserva aux = pedirDatosReserva(mihotel);
+        System.out.println("Generando nueva reserva...");
+        return mihotel.generarReserva(aux.getNumeroHabitacion(), aux.getIdPasajero(), aux.getFechaInicio(), aux.getFechaFin(), aux.getDescripcion());
+    }
+
+    // Método para eliminar una reserva
+    public static String eliminarReserva(Hotel mihotel) {
+        Reserva aux = pedirDatosReserva(mihotel);
+        System.out.println("Eliminado reserva...");
+        return mihotel.eliminarReserva(aux.getNumeroHabitacion(), aux.getIdPasajero(), aux.getFechaInicio(), aux.getFechaFin());
+    }
 
 
 }

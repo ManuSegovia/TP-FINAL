@@ -70,10 +70,9 @@ public abstract class Usuario implements JSONable
 
     @Override
     public String toString() {
-        return "Clases.Usuario{" +
-                "dni='" + dni + '\'' +
-                ", nombre='" + nombre + '\'' +
-                '}';
+        return "Clases.Usuario\n" +
+                "Dni:'" + dni + '\'' +
+                "Nombre:'" + nombre + '\'';
     }
 
     // Método toJSON para convertir a JSON

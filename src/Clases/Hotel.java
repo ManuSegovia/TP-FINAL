@@ -117,14 +117,14 @@ public class Hotel {
 
     //ocupar una habitación en un período determinado (consultando la ocupación y las reservas).
 
-    public String generarReserva(int numeroHabtacion, int idPasajero, LocalDate fechaReserva, LocalDate fechaFinReserva) throws HabitacionInexistenteException, PasajeroInexistenteException {
+    public String generarReserva(int numeroHabtacion, int idPasajero, LocalDate fechaReserva, LocalDate fechaFinReserva,String descripcion) throws HabitacionInexistenteException, PasajeroInexistenteException {
         if (habitaciones.buscar(numeroHabtacion) == null) {
             throw new HabitacionInexistenteException();
         }
         if (pasajeros.buscar(idPasajero) == null) {
             throw new PasajeroInexistenteException();
         }
-        Reserva nueva = new Reserva(idPasajero, fechaReserva, fechaFinReserva, numeroHabtacion);
+        Reserva nueva = new Reserva(idPasajero, fechaReserva, fechaFinReserva, numeroHabtacion,descripcion);
         Habitacion buscar = habitaciones.buscar(numeroHabtacion);
         if (buscar.getEstadoHabitacion() == EstadoHabitacion.MANTENIMIENTO || buscar.getEstadoHabitacion() == EstadoHabitacion.OTRO) {
             return "Lo sentimos pero la habitacion que quieres reservar no se encuentra disponible";
@@ -132,8 +132,6 @@ public class Hotel {
             String rtdo = reservas.agregar(numeroHabtacion, nueva);
             return rtdo;
         }
-
-
     }
 
     public String eliminarReserva(int numeroHabtacion, int idPasajero, LocalDate fechaReserva, LocalDate fechaFinReserva) throws HabitacionInexistenteException, PasajeroInexistenteException {
@@ -155,7 +153,7 @@ public class Hotel {
         if (habitaciones.isEmpty()) {
             throw new ListaVaciaException("Actualmente no hay habitaciones cargadas en el sistema");
         } else {
-            mensaje.append("HABITACIONES").append("\n");
+            mensaje.append("HABITACIONES:").append("\n");
             mensaje.append(habitaciones.listar());
             return mensaje.toString();
         }
@@ -169,6 +167,7 @@ public class Hotel {
 
             for (Map.Entry<Integer, Habitacion> entrada : habitaciones.getElementos().entrySet()) {
                 if (entrada.getValue().getEstadoHabitacion().equals(EstadoHabitacion.OCUPADA)) {
+                    mensaje.append("HABITACIONES OCUPADAS:");
                     mensaje.append(entrada.getValue().toString());
                 }
             }
@@ -186,6 +185,7 @@ public class Hotel {
         } else {
             for (Map.Entry<Integer, Habitacion> entrada : habitaciones.getElementos().entrySet()) {
                 if (entrada.getValue().getEstadoHabitacion().equals(EstadoHabitacion.DISPONIBLE)) {
+                    mensaje.append("HABITACIONES DISPONIBLES:");
                     mensaje.append(entrada.getValue().toString());
                 }
             }
@@ -197,30 +197,33 @@ public class Hotel {
         return mensaje.toString();
     }
 
-    public String listarHabitacionesOcupadasMotivo(EstadoHabitacion estadoHabitacion) throws ListaVaciaException {
+    public String listarHabitacionesOcupadasMotivo() throws ListaVaciaException {
         StringBuilder mensaje = new StringBuilder();
         if (habitaciones.isEmpty()) {
             throw new ListaVaciaException("Actualmente no hay habitaciones en el sistema");
         } else {
             for (Map.Entry<Integer, Habitacion> entrada : habitaciones.getElementos().entrySet()) {
-                if (entrada.getValue().getEstadoHabitacion().equals(estadoHabitacion)) {
+                if (entrada.getValue().getEstadoHabitacion().equals(EstadoHabitacion.MANTENIMIENTO)) {
+                    mensaje.append("HABITACIONES EN MANTENIMIENTO:");
                     mensaje.append(entrada.getValue().toString());
                 }
             }
             if (mensaje.isEmpty()) {
-                return "Actualmente no hay habitaciones" + estadoHabitacion + "en el sistema";
+                return "Actualmente no hay habitaciones" + EstadoHabitacion.MANTENIMIENTO + "en el sistema";
             }
         }
 
         return mensaje.toString();
     }
 
+
+
     public String listarPasajeros() throws ListaVaciaException {
         StringBuilder mensaje = new StringBuilder();
         if (pasajeros.isEmpty()) {
             throw new ListaVaciaException("Actualmente no hoy pasajeros registrados en el sistema");
         }
-        mensaje.append("PASAJEROS").append("\n");
+        mensaje.append("PASAJEROS:").append("\n");
         mensaje.append(pasajeros.listar());
         return mensaje.toString();
     }
@@ -458,12 +461,11 @@ public class Hotel {
 
     @Override
     public String toString() {
-        return "Clases.Hotel{" +
-                "nombre='" + nombre + '\'' +
-                ", habitaciones=" + habitaciones +
-                ", pasajeros=" + pasajeros +
-                ", reservas=" + reservas +
-                '}';
+        return "Clases.Hotel:\n"+
+                "Nombre:'" + nombre + '\n' +
+                "Habitaciones:" + habitaciones +'\n'+
+                "Pasajeros:" + pasajeros +'\n'+
+                "Reservas:" + reservas;
     }
     // Implementación de toJSON y cargar ARCHIVO
     public void cargarArch() {

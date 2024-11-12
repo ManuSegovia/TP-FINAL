@@ -385,6 +385,14 @@ public class Main {
                                                 SolicitudDatos.crearPasajero(mihotel);
                                                 System.out.println(SolicitudDatos.generarReserva(mihotel));
                                                 break;
+                                            case 13:
+                                                //crear reserva de mantenimiento
+                                                try {
+                                                    // generar reserva
+                                                    System.out.println(SolicitudDatos.generarReservaMantenimiento(mihotel));
+                                                } catch (HabitacionInexistenteException e) {
+                                                    System.out.println(e.getMessage());
+                                                }
                                             case 0:
                                                 System.out.println("Cerrando seccion...");
                                                 break;

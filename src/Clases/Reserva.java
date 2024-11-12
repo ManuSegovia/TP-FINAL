@@ -12,14 +12,16 @@ public class Reserva extends GestorDeDatos
     private LocalDate fechaFin;
     private int numeroHabitacion;
     private EstadoReserva estado;
+    private String descripcion;
 
-    public Reserva(int idPasajero,LocalDate fechaInicio,LocalDate fechaFin,int numeroHabitacion)
+    public Reserva(int idPasajero,LocalDate fechaInicio,LocalDate fechaFin,int numeroHabitacion,String descripcion)
     {
         this.idPasajero =idPasajero;
         this.fechaInicio = fechaInicio;
         this.fechaFin=fechaFin;
         this.numeroHabitacion=numeroHabitacion;
         this.estado = EstadoReserva.PENDIENTE;
+        this.descripcion=descripcion;
     }
 
     public int getIdPasajero() {
@@ -62,27 +64,37 @@ public class Reserva extends GestorDeDatos
         this.estado = estado;
     }
 
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Reserva reserva = (Reserva) o;
-        return idPasajero == reserva.idPasajero && numeroHabitacion == reserva.numeroHabitacion && Objects.equals(fechaInicio, reserva.fechaInicio) && Objects.equals(fechaFin, reserva.fechaFin);
+        return idPasajero == reserva.idPasajero && numeroHabitacion == reserva.numeroHabitacion && Objects.equals(fechaInicio, reserva.fechaInicio) && Objects.equals(fechaFin, reserva.fechaFin) && estado == reserva.estado && Objects.equals(descripcion, reserva.descripcion);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), idPasajero, fechaInicio, fechaFin, numeroHabitacion);
+        return Objects.hash(super.hashCode(), idPasajero, fechaInicio, fechaFin, numeroHabitacion, estado, descripcion);
     }
 
     @Override
     public String toString() {
-        return  "idPasajero=" + idPasajero +
-                ", fechaInicio=" + fechaInicio +
-                ", fechaFin=" + fechaFin +
-                ", numeroHabitacion=" + numeroHabitacion +
-                ", estadoReserva=" + estado;
+        return "Reserva:\n" +
+                "idPasajero:" + idPasajero+'\n' +
+                "FechaInicio:" + fechaInicio+'\n' +
+                "FechaFin:" + fechaFin+'\n' +
+                "NumeroHabitacion:" + numeroHabitacion+'\n' +
+                "Estado:" + estado+'\n' +
+                "Descripcion:" + descripcion;
     }
 
     public String realizar_CHECKIN() {
@@ -129,6 +141,7 @@ public class Reserva extends GestorDeDatos
         json.put("fechaFin", fechaFin.toString());
         json.put("numeroHabitacion", numeroHabitacion);
         json.put("estado", estado.toString());
+        json.put("descripcion",descripcion.toString());
         return json;
     }
 

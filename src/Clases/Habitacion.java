@@ -60,9 +60,9 @@ public class Habitacion implements JSONable
 
     @Override
     public String toString() {
-        return "numero=" + numero +
-                ", tipoHabitacion=" + tipoHabitacion +
-                ", estadoHabitacion=" + estadoHabitacion;
+        return "Numero:" + numero +'\n'+
+                "TipoHabitacion:" + tipoHabitacion +'\n' +
+                "EstadoHabitacion:" + estadoHabitacion;
     }
 
 

@@ -84,9 +84,8 @@ public class GestorDeDatos<T extends JSONable> implements JSONable
 
     @Override
     public String toString() {
-        return "GestorDeDatos{" +
-                "elementos=" + elementos +
-                '}';
+        return "GestorDeDatos:\n" +
+                "Elementos:" + elementos +'\n';
     }
 
     @Override

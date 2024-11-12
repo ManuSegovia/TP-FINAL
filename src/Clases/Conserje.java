@@ -11,9 +11,9 @@ public class Conserje extends Usuario {
 
     @Override
     public String toString() {
-        return "dni='" + dni + '\'' +
-                ", nombre='" + nombre + '\'' +
-                ", tipoUsuario=" + tipoUsuario;
+        return "Dni:'" + dni + '\'' +
+                ", Nombre:'" + nombre + '\'' +
+                ", TipoUsuario:" + tipoUsuario;
     }
 
     // Método toJSON para convertir a JSON

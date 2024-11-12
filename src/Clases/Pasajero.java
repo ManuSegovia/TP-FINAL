@@ -95,12 +95,12 @@ public class Pasajero implements JSONable
 
     @Override
     public String toString() {
-        return "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", apellido='" + apellido + '\'' +
-                ", dni='" + dni + '\'' +
-                ", origen='" + origen + '\'' +
-                ", domicilioOrigen='" + domicilioOrigen;
+        return "Id:" + id+
+                "Nombre:'" + nombre + '\'' +
+                "Apellido:'" + apellido + '\'' +
+                "Dni:'" + dni + '\'' +
+                "Origen:'" + origen + '\'' +
+                "DomicilioOrigen:'" + domicilioOrigen;
     }
 
     // Método toJSON para convertir a JSON
