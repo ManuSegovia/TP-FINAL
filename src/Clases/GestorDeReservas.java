@@ -182,9 +182,7 @@ public class GestorDeReservas<T> {
 
 
 
-    public JSONObject toJSON() {
-        JSONObject jsonObject = new JSONObject();
-
+    public JSONArray toJSON() {
         // Convertir el Map a un JSONArray
         JSONArray reservasJSON = new JSONArray();
         for (Map.Entry<Integer, ArrayList<T>> entry : listadoHabitaciones.entrySet()) {
@@ -199,12 +197,11 @@ public class GestorDeReservas<T> {
                 }
                 // Si T es otro tipo de objeto, deberás agregar su respectiva serialización.
             }
-            reservaListJSON.put("reservas", reservasArrayJSON);
+            reservaListJSON.put("reservasAsignadas", reservasArrayJSON);
             reservasJSON.put(reservaListJSON);
         }
 
-        jsonObject.put("listadoHabitaciones", reservasJSON);
-        return jsonObject;
+        return reservasJSON;
     }
 
     public Map<Integer, ArrayList<T>> getElementos() {

@@ -1,6 +1,8 @@
 import Clases.*;
 import Enums.EstadoHabitacion;
+import Enums.EstadoReserva;
 import Enums.TipoHabitacion;
+import Enums.TipoUsuario;
 import Exceptions.HabitacionInexistenteException;
 import Exceptions.ListaVaciaException;
 import Exceptions.PasajeroInexistenteException;
@@ -8,7 +10,11 @@ import Exceptions.ReservaInexistenteException;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.time.format.DateTimeFormatter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -21,43 +27,16 @@ public class Main {
     //saber usar hash y set y mapas para el parcial
     //interfaces de ocupable
     public static void main(String[] args) {
-        Hotel mihotel = new Hotel("NuestroHotel");
-        Scanner scanner = new Scanner(System.in);
-        /*
-        Administrador admin = new Administrador("46277918", "Juani", "admin123");
-        Conserje empleado = new Conserje("46277918", "Manu");
-        System.out.println(mihotel.crearHabitacionNueva(admin, 3232, TipoHabitacion.DOBLE, EstadoHabitacion.DISPONIBLE));
-        System.out.println(mihotel.crearHabitacionNueva(admin, 3233, TipoHabitacion.DOBLE, EstadoHabitacion.DISPONIBLE));
-        System.out.println(mihotel.listarHabitaciones());
-        System.out.println(mihotel.generarReservaConCreacionDePasajero(3232, LocalDate.of(2024, 11, 10), LocalDate.of(2024, 11, 15)));
-        System.out.println(mihotel.listarPasajeros());
-        System.out.println(mihotel.listarReservas());
-        System.out.println(mihotel.generarReservaConCreacionDePasajero(3232, LocalDate.of(2024, 11, 16), LocalDate.of(2024, 11, 18)));
-        System.out.println(mihotel.listarPasajeros());
-        System.out.println(mihotel.listarReservas());
-        System.out.println(mihotel.crearPasajero());
-        System.out.println(mihotel.generarReserva(3233, 3, LocalDate.of(2024, 11, 18), LocalDate.of(2024, 11, 16)));
-        */
-        //SolicitudDatosCrearEntidades.crearPasajero(mihotel);
-        //SolicitudDatosCrearEntidades.crearPasajero(mihotel);
+        Hotel mihotel = null;
 
-        Administrador admin = new Administrador("46277918", "Juan Ignacio", "Juanjuli2");
-        Habitacion nueva1 = new Habitacion(1, TipoHabitacion.SIMPLE, EstadoHabitacion.DISPONIBLE);
-        Habitacion nueva2 = new Habitacion(2, TipoHabitacion.DOBLE, EstadoHabitacion.MANTENIMIENTO);
-        Habitacion nueva3 = new Habitacion(3, TipoHabitacion.SUITE, EstadoHabitacion.OCUPADA);
-        Habitacion nueva4 = new Habitacion(4, TipoHabitacion.SIMPLE, EstadoHabitacion.DISPONIBLE);
-        Habitacion nueva5 = new Habitacion(5, TipoHabitacion.SIMPLE, EstadoHabitacion.OTRO);
-        mihotel.getHabitaciones().agregar(1, nueva1);
-        mihotel.getHabitaciones().agregar(2, nueva2);
-        mihotel.getHabitaciones().agregar(3, nueva3);
-        mihotel.getHabitaciones().agregar(4, nueva4);
-        mihotel.getHabitaciones().agregar(5, nueva5);
-        Pasajero nuevo1 = new Pasajero("Pedro", "Alfonso", "46277919", "Mar del Plata", "Salta 3949");
-        Pasajero nuevo2 = new Pasajero("Manuel", "Segovia", "46277920", "Mar del Plata", "Ortiz de Zarate 7062");
-        mihotel.getPasajeros().agregar(nuevo1.getId(), nuevo1);
-        mihotel.getPasajeros().agregar(nuevo2.getId(), nuevo2);
-        mihotel.crearConserjeNuevo("46277921", "Lucas");
-        mihotel.getUsuarios().agregar(admin.getId(), admin);
+        Scanner scanner = new Scanner(System.in);
+
+        try {
+            mihotel = fromJson();
+        } catch (JSONException e) {
+            System.out.println(e.getMessage());
+        }
+
         // se ingresa una opcion no valida para comenzar
         int arranque = -1;
         while (arranque != 0) {
@@ -261,6 +240,7 @@ public class Main {
                                                         SolicitudDatos.crearConserje(mihotel);
                                                         break;
                                                     case 0:
+                                                        opcionUsuario = 0;
                                                         System.out.println("Cerrando seccion...");
                                                         break;
                                                 }
@@ -298,8 +278,8 @@ public class Main {
                                                 break;
                                             case 3:
                                                 try {
-                                                    EstadoHabitacion estado = SolicitudDatos.obtenerEstadoHabitacion();
-                                                    System.out.println(mihotel.listarHabitacionesOcupadasMotivo(estado));
+                                                    //EstadoHabitacion estado = SolicitudDatos.obtenerEstadoHabitacion();*/
+                                                    System.out.println(mihotel.listarHabitacionesOcupadasMotivo());
                                                 } catch (ListaVaciaException e) {
                                                     System.out.println(e.getMessage());
                                                 }
@@ -393,7 +373,12 @@ public class Main {
                                                 } catch (HabitacionInexistenteException e) {
                                                     System.out.println(e.getMessage());
                                                 }
+                                            case 14:
+                                                // verificar disponibilidad de una habitacion x fecha
+                                                System.out.println(SolicitudDatos.solicitarDisponibilidad(mihotel));
+                                                break;
                                             case 0:
+                                                opcionUsuario = 0;
                                                 System.out.println("Cerrando seccion...");
                                                 break;
                                         }
@@ -421,21 +406,100 @@ public class Main {
     }
 
 
-    public static Hotel fromJson(String filePath) {
-        Gson gson = new Gson();
-        try (FileReader reader = new FileReader(filePath)) {
-            // Leer el JSON y convertirlo en un JsonElement
-            JsonElement jsonElement = gson.fromJson(reader, JsonElement.class);
+    public static Hotel fromJson() throws JSONException {
+        String contenidoLeido = JSONUtiles.downloadJSON("Hotel");
+        JSONObject hotelJSON = new JSONObject(contenidoLeido);
+        String nombreHotel = hotelJSON.getString("nombre");
 
-            // Asegurarse de que el JSON tiene la estructura correcta
-            JsonObject jsonObject = jsonElement.getAsJsonObject();
+        // creamos la instacia del hotel que mas tarde vamos a retornar
+        Hotel mihotel = new Hotel(nombreHotel);
 
-            // Deserializar el JSON en un objeto Hotel
-            return gson.fromJson(jsonObject, Hotel.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+        JSONArray habitacionesJSON = hotelJSON.getJSONArray("habitaciones");
+        JSONObject habitacionJSON;
+
+        for (int i = 0; i < habitacionesJSON.length(); i++) {
+            // Obtener el objeto JSON de cada habitación
+            habitacionJSON = habitacionesJSON.getJSONObject(i);
+
+            // Extraer los valores de cada campo
+            int numero = habitacionJSON.getInt("numero");
+
+            // Convertir el tipo y estado de la habitación a partir de las cadenas en el JSON
+            TipoHabitacion tipoHabitacion = TipoHabitacion.valueOf(habitacionJSON.getString("tipoHabitacion"));
+            EstadoHabitacion estadoHabitacion = EstadoHabitacion.valueOf(habitacionJSON.getString("estadoHabitacion"));
+
+            mihotel.crearHabitacionNueva(numero, tipoHabitacion, estadoHabitacion);
         }
+
+        JSONArray pasajerosJSON = hotelJSON.getJSONArray("pasajeros");
+        JSONObject pasajeroJSON;
+
+        for (int i = 0; i < pasajerosJSON.length(); i++) {
+            // Obtener el objeto JSON de cada pasajero
+            pasajeroJSON = pasajerosJSON.getJSONObject(i);
+
+            // Extraer los valores de cada campo
+            int id = pasajeroJSON.getInt("id");
+            String nombre = pasajeroJSON.getString("nombre");
+            String apellido = pasajeroJSON.getString("apellido");
+            String dni = pasajeroJSON.getString("dni");
+            String origen = pasajeroJSON.getString("origen");
+            String domicilioOrigen = pasajeroJSON.getString("domicilioOrigen");
+
+            // Crear la instancia de Pasajero con los valores obtenidos
+            Pasajero pasajero = new Pasajero(nombre, apellido, dni, origen, domicilioOrigen);
+            mihotel.getPasajeros().agregar(pasajero.getId(), pasajero);
+        }
+
+        JSONArray reservasJSON = hotelJSON.getJSONArray("reservas");
+        JSONObject reservas_Habitacion;
+        JSONArray reservasJSONaux;
+        JSONObject reserva;
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        for (int i = 0; i < reservasJSON.length(); i++) {
+
+            reservas_Habitacion = reservasJSON.getJSONObject(i);
+            reservasJSONaux = reservas_Habitacion.getJSONArray("reservasAsignadas");
+
+            for (int o = 0; o < reservasJSONaux.length(); o++) {
+                reserva = reservasJSONaux.getJSONObject(o);
+                String descripcion = reserva.getString("descripcion");
+                EstadoReserva estado = EstadoReserva.valueOf(reserva.getString("estado"));
+                LocalDate fechaInicio = LocalDate.parse(reserva.getString("fechaInicio"), formatter);
+                LocalDate fechaFin = LocalDate.parse(reserva.getString("fechaFin"), formatter);
+                int numeroHabitacion = reserva.getInt("numeroHabitacion");
+                int idPasajero = reserva.getInt("idPasajero");
+                mihotel.generarReserva(numeroHabitacion, idPasajero, fechaInicio, fechaFin, descripcion);
+            }
+
+        }
+        JSONArray usuariosJSON = hotelJSON.getJSONArray("usuarios");
+        JSONObject usuarioLeido;
+        for (int i = 0; i < usuariosJSON.length(); i++) {
+            usuarioLeido = usuariosJSON.getJSONObject(i);
+
+            // Verificamos el tipo de usuario para decidir si es ADMINISTRADOR o CONSERJE
+            String tipoUsuarioStr = usuarioLeido.getString("tipoUsuario");
+            TipoUsuario tipoUsuario = TipoUsuario.valueOf(tipoUsuarioStr);  // Convierte el string en el enum correspondiente
+
+            if (tipoUsuario == TipoUsuario.ADMINISTRADOR) {
+                // Si es Administrador, deserializamos también la contraseña
+                String dni = usuarioLeido.getString("dni");
+                String nombre = usuarioLeido.getString("nombre");
+                String contraseña = usuarioLeido.getString("contraseña");
+                Administrador admin = new Administrador(dni, nombre, contraseña);
+                mihotel.getUsuarios().agregar(admin.getId(), admin);
+            } else if (tipoUsuario == TipoUsuario.CONSERJE) {
+                // Si es Conserje, solo necesitamos dni y nombre
+                String dni = usuarioLeido.getString("dni");
+                String nombre = usuarioLeido.getString("nombre");
+                Conserje conserje = new Conserje(dni, nombre);
+                mihotel.getUsuarios().agregar(conserje.getId(), conserje);
+            }
+        }
+        return mihotel;
     }
 }
 //CONSULTAS

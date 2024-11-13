@@ -124,7 +124,7 @@ public class Hotel {
         if (pasajeros.buscar(idPasajero) == null) {
             throw new PasajeroInexistenteException();
         }
-        Reserva nueva = new Reserva(idPasajero, fechaReserva, fechaFinReserva, numeroHabtacion,descripcion);
+        Reserva nueva = new Reserva(idPasajero, fechaReserva, fechaFinReserva, numeroHabtacion, descripcion);
         Habitacion buscar = habitaciones.buscar(numeroHabtacion);
         if (buscar.getEstadoHabitacion() == EstadoHabitacion.MANTENIMIENTO || buscar.getEstadoHabitacion() == EstadoHabitacion.OTRO) {
             return "Lo sentimos pero la habitacion que quieres reservar no se encuentra disponible";
@@ -367,6 +367,7 @@ public class Hotel {
         }
     }
 
+
     // Cambiar el estado de una habitación
     public String cambiarEstadoHabitacion(int numeroHabitacion, EstadoHabitacion nuevoEstado) {
         Habitacion habitacion = habitaciones.getElementos().get(numeroHabitacion);
@@ -404,6 +405,10 @@ public class Hotel {
         habitaciones.getElementos().put(nuevoNumero, habitacion);
 
         return "El número de la habitación ha sido cambiado de " + numeroActual + " a " + nuevoNumero + ".";
+    }
+    public boolean habitacionDisponibleFechas(int key, LocalDate inicioReserva, LocalDate finReserva)
+    {
+        return reservas.habitacionDisponibleFechas(key, inicioReserva, finReserva);
     }
 
     public String getNombre() {
@@ -487,12 +492,7 @@ public class Hotel {
         jsonObject.put("pasajeros", pasajerosArray);
 
         // Convertir las reservas a JSON
-        JSONArray reservasArray = new JSONArray();
-        for (Map.Entry<Integer, ArrayList<Reserva>> entry : reservas.getElementos().entrySet()) {
-            for (Reserva reserva : entry.getValue()) {
-                reservasArray.put(reserva.toJSON());
-            }
-        }
+        JSONArray reservasArray = reservas.toJSON();
         jsonObject.put("reservas", reservasArray);
 
         // Convertir los usuarios a JSON
@@ -504,7 +504,5 @@ public class Hotel {
 
         JSONUtiles.uploadJSON(jsonObject, "Hotel");
     }
-
-
 
 }

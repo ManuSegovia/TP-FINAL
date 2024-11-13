@@ -345,5 +345,26 @@ public class SolicitudDatos {
         return mihotel.eliminarReserva(aux.getNumeroHabitacion(), aux.getIdPasajero(), aux.getFechaInicio(), aux.getFechaFin());
     }
 
+    public static String solicitarDisponibilidad(Hotel mihotel) {
+        // Solicitar el número de habitación y las fechas al usuario
+        System.out.println("Ingrese el número de habitación:");
+        int numeroHabitacion = new Scanner(System.in).nextInt();
+
+        // Solicitar la fecha de inicio y fin al usuario
+        System.out.println("Ingrese la fecha de inicio (formato yyyy-MM-dd):");
+        LocalDate fechaInicio = LocalDate.parse(new Scanner(System.in).next());
+
+        System.out.println("Ingrese la fecha de fin (formato yyyy-MM-dd):");
+        LocalDate fechaFin = LocalDate.parse(new Scanner(System.in).next());
+
+        // Verificamos si la habitación está disponible
+        boolean disponible = mihotel.habitacionDisponibleFechas(numeroHabitacion, fechaInicio, fechaFin);
+
+        if (disponible) {
+            return "La habitación está disponible.";
+        } else {
+            return "La habitación no está disponible en ese rango de fechas.";
+        }
+    }
 
 }
