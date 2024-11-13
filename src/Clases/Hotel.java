@@ -117,7 +117,7 @@ public class Hotel {
 
     //ocupar una habitación en un período determinado (consultando la ocupación y las reservas).
 
-    public String generarReserva(int numeroHabtacion, int idPasajero, LocalDate fechaReserva, LocalDate fechaFinReserva,String descripcion) throws HabitacionInexistenteException, PasajeroInexistenteException {
+    public String generarReserva(int numeroHabtacion, int idPasajero, LocalDate fechaReserva, LocalDate fechaFinReserva, String descripcion) throws HabitacionInexistenteException, PasajeroInexistenteException {
         if (habitaciones.buscar(numeroHabtacion) == null) {
             throw new HabitacionInexistenteException();
         }
@@ -134,375 +134,385 @@ public class Hotel {
         }
     }
 
-    public String eliminarReserva(int numeroHabtacion, int idPasajero, LocalDate fechaReserva, LocalDate fechaFinReserva) throws HabitacionInexistenteException, PasajeroInexistenteException {
+    public String generarReservaMantenimiento(int numeroHabtacion, int idPasajero, LocalDate fechaReserva, LocalDate fechaFinReserva, String descripcion) throws HabitacionInexistenteException, PasajeroInexistenteException {
         if (habitaciones.buscar(numeroHabtacion) == null) {
             throw new HabitacionInexistenteException();
         }
-        if (pasajeros.buscar(idPasajero) == null) {
-            throw new PasajeroInexistenteException();
-        }
-        String rtdo = reservas.eliminar(numeroHabtacion, idPasajero, fechaReserva, fechaFinReserva);
+        Reserva nueva = new Reserva(idPasajero, fechaReserva, fechaFinReserva, numeroHabtacion, descripcion);
+        Habitacion buscar = habitaciones.buscar(numeroHabtacion);
+        String rtdo = reservas.agregar(numeroHabtacion, nueva);
         return rtdo;
     }
 
-    //---------------------------------------------------------------------------------------------------------------------------------
-    // Cuestiones relacionandas con las habitaciones (Parte concerje) -----------------------------------------------------------------
-
-    public String listarHabitaciones() throws ListaVaciaException {
-        StringBuilder mensaje = new StringBuilder();
-        if (habitaciones.isEmpty()) {
-            throw new ListaVaciaException("Actualmente no hay habitaciones cargadas en el sistema");
-        } else {
-            mensaje.append("HABITACIONES:").append("\n");
-            mensaje.append(habitaciones.listar());
-            return mensaje.toString();
-        }
+public String eliminarReserva(int numeroHabtacion, int idPasajero, LocalDate fechaReserva, LocalDate fechaFinReserva) throws HabitacionInexistenteException, PasajeroInexistenteException {
+    if (habitaciones.buscar(numeroHabtacion) == null) {
+        throw new HabitacionInexistenteException();
     }
+    if (pasajeros.buscar(idPasajero) == null) {
+        throw new PasajeroInexistenteException();
+    }
+    String rtdo = reservas.eliminar(numeroHabtacion, idPasajero, fechaReserva, fechaFinReserva);
+    return rtdo;
+}
 
-    public String listarHabitacionesOcupadas() throws ListaVaciaException {
-        StringBuilder mensaje = new StringBuilder();
-        if (habitaciones.isEmpty()) {
-            throw new ListaVaciaException("Actualmente no hay habitaciones en el sistema");
-        } else {
+//---------------------------------------------------------------------------------------------------------------------------------
+// Cuestiones relacionandas con las habitaciones (Parte concerje) -----------------------------------------------------------------
 
-            for (Map.Entry<Integer, Habitacion> entrada : habitaciones.getElementos().entrySet()) {
-                if (entrada.getValue().getEstadoHabitacion().equals(EstadoHabitacion.OCUPADA)) {
-                    mensaje.append("HABITACIONES OCUPADAS:");
-                    mensaje.append(entrada.getValue().toString());
-                }
-            }
-            if (mensaje.isEmpty()) {
-                return "Actualmente no hay habitaciones ocupadas en el sistema";
-            }
-        }
+public String listarHabitaciones() throws ListaVaciaException {
+    StringBuilder mensaje = new StringBuilder();
+    if (habitaciones.isEmpty()) {
+        throw new ListaVaciaException("Actualmente no hay habitaciones cargadas en el sistema");
+    } else {
+        mensaje.append("HABITACIONES:").append("\n");
+        mensaje.append(habitaciones.listar());
         return mensaje.toString();
     }
+}
 
-    public String listarHabitacionesDisponibles() throws ListaVaciaException {
-        StringBuilder mensaje = new StringBuilder();
-        if (habitaciones.isEmpty()) {
-            throw new ListaVaciaException("Actualmente no hay habitaciones en el sistema");
-        } else {
-            for (Map.Entry<Integer, Habitacion> entrada : habitaciones.getElementos().entrySet()) {
-                if (entrada.getValue().getEstadoHabitacion().equals(EstadoHabitacion.DISPONIBLE)) {
-                    mensaje.append("HABITACIONES DISPONIBLES:");
-                    mensaje.append(entrada.getValue().toString());
-                }
-            }
-            if (mensaje.isEmpty()) {
-                return "Actualmente no hay habitaciones disponibles en el sistema";
+public String listarHabitacionesOcupadas() throws ListaVaciaException {
+    StringBuilder mensaje = new StringBuilder();
+    if (habitaciones.isEmpty()) {
+        throw new ListaVaciaException("Actualmente no hay habitaciones en el sistema");
+    } else {
+
+        for (Map.Entry<Integer, Habitacion> entrada : habitaciones.getElementos().entrySet()) {
+            if (entrada.getValue().getEstadoHabitacion().equals(EstadoHabitacion.OCUPADA)) {
+                mensaje.append("HABITACIONES OCUPADAS:");
+                mensaje.append(entrada.getValue().toString());
             }
         }
-
-        return mensaje.toString();
-    }
-
-    public String listarHabitacionesOcupadasMotivo() throws ListaVaciaException {
-        StringBuilder mensaje = new StringBuilder();
-        if (habitaciones.isEmpty()) {
-            throw new ListaVaciaException("Actualmente no hay habitaciones en el sistema");
-        } else {
-            for (Map.Entry<Integer, Habitacion> entrada : habitaciones.getElementos().entrySet()) {
-                if (entrada.getValue().getEstadoHabitacion().equals(EstadoHabitacion.MANTENIMIENTO)) {
-                    mensaje.append("HABITACIONES EN MANTENIMIENTO:");
-                    mensaje.append(entrada.getValue().toString());
-                }
-            }
-            if (mensaje.isEmpty()) {
-                return "Actualmente no hay habitaciones" + EstadoHabitacion.MANTENIMIENTO + "en el sistema";
-            }
+        if (mensaje.isEmpty()) {
+            return "Actualmente no hay habitaciones ocupadas en el sistema";
         }
-
-        return mensaje.toString();
     }
+    return mensaje.toString();
+}
 
-
-
-    public String listarPasajeros() throws ListaVaciaException {
-        StringBuilder mensaje = new StringBuilder();
-        if (pasajeros.isEmpty()) {
-            throw new ListaVaciaException("Actualmente no hoy pasajeros registrados en el sistema");
-        }
-        mensaje.append("PASAJEROS:").append("\n");
-        mensaje.append(pasajeros.listar());
-        return mensaje.toString();
-    }
-
-    public String listarReservas() throws ListaVaciaException {
-        return reservas.listar();
-    }
-
-    public String listarConserjes() throws ListaVaciaException {
-        StringBuilder sb = new StringBuilder();
-        boolean hayConserjes = false; // Variable para verificar si hay conserjes
-
-        for (Usuario usuario : usuarios.getElementos().values()) {
-            if (usuario.getTipoUsuario() == TipoUsuario.CONSERJE) {
-                sb.append("Nombre: " + usuario.getNombre() + " DNI:" + usuario.getDni()).append("\n");
-                hayConserjes = true; // Si encontramos un conserje, cambiamos el estado
+public String listarHabitacionesDisponibles() throws ListaVaciaException {
+    StringBuilder mensaje = new StringBuilder();
+    if (habitaciones.isEmpty()) {
+        throw new ListaVaciaException("Actualmente no hay habitaciones en el sistema");
+    } else {
+        for (Map.Entry<Integer, Habitacion> entrada : habitaciones.getElementos().entrySet()) {
+            if (entrada.getValue().getEstadoHabitacion().equals(EstadoHabitacion.DISPONIBLE)) {
+                mensaje.append("HABITACIONES DISPONIBLES:");
+                mensaje.append(entrada.getValue().toString());
             }
         }
-
-        // Si no se han agregado conserjes, agregamos el mensaje
-        if (!hayConserjes) {
-            throw new ListaVaciaException("Actualmente no hay conserjes cargados en el sistema");
+        if (mensaje.isEmpty()) {
+            return "Actualmente no hay habitaciones disponibles en el sistema";
         }
-
-        return sb.toString();
     }
 
+    return mensaje.toString();
+}
 
-    // Método para realizar el check-in completo
-    public String realizarCheckInCompleto(String dniPasajero, int habitacion) throws ReservaInexistenteException, HabitacionInexistenteException {
+public String listarHabitacionesOcupadasMotivo() throws ListaVaciaException {
+    StringBuilder mensaje = new StringBuilder();
+    if (habitaciones.isEmpty()) {
+        throw new ListaVaciaException("Actualmente no hay habitaciones en el sistema");
+    } else {
+        for (Map.Entry<Integer, Habitacion> entrada : habitaciones.getElementos().entrySet()) {
+            if (entrada.getValue().getEstadoHabitacion().equals(EstadoHabitacion.MANTENIMIENTO)) {
+                mensaje.append("HABITACIONES EN MANTENIMIENTO:");
+                mensaje.append(entrada.getValue().toString());
+            }
+        }
+        if (mensaje.isEmpty()) {
+            return "Actualmente no hay habitaciones" + EstadoHabitacion.MANTENIMIENTO + "en el sistema";
+        }
+    }
 
-        for (Map.Entry<Integer, Pasajero> entry : pasajeros.getElementos().entrySet()) {
-            // Verificamos si el pasajero tiene el DNI que estamos buscando
-            Pasajero pasajero = (Pasajero) entry.getValue();  // Suponiendo que T es de tipo Pasajero
+    return mensaje.toString();
+}
 
-            if (pasajero.getDni().equals(dniPasajero)) {
-                // Encontramos el pasajero, ahora podemos realizar la reserva
-                int id_Pasajero = pasajero.getId();
 
-                // Buscar la reserva del pasajero por DNI
-                Reserva reserva = reservas.buscarReservaPorPasajero(id_Pasajero, habitacion);
-                if (reserva == null) {
-                    throw new ReservaInexistenteException("No se encontro la reserva asociada al pasajero " + dniPasajero);
-                }
+public String listarPasajeros() throws ListaVaciaException {
+    StringBuilder mensaje = new StringBuilder();
+    if (pasajeros.isEmpty()) {
+        throw new ListaVaciaException("Actualmente no hoy pasajeros registrados en el sistema");
+    }
+    mensaje.append("PASAJEROS:").append("\n");
+    mensaje.append(pasajeros.listar());
+    return mensaje.toString();
+}
 
-                // Verificar si la fecha de inicio es válida para el check-in
-                String mensajeCheckIn = reserva.realizar_CHECKIN();
-                System.out.println(mensajeCheckIn);
-                if (mensajeCheckIn.contains("correctamente")) {
-                    // Si el check-in se realizó correctamente, cambiamos el estado de la habitación
-                    Habitacion habitacion2 = habitaciones.buscar(reserva.getNumeroHabitacion());
-                    if (habitacion2 != null) {
-                        String mensaje = habitacion2.cambiarEstadoHabitacion();
-                        habitaciones.agregar(reserva.getNumeroHabitacion(), habitacion2);
-                        reservas.agregar(reserva.getNumeroHabitacion(), reserva);
-                        return "Check-in realizado y se cambio la habitacion se encuentra: " + mensaje;
-                    } else {
-                        throw new HabitacionInexistenteException();
-                    }
+public String listarReservas() throws ListaVaciaException {
+    return reservas.listar();
+}
+
+public String listarConserjes() throws ListaVaciaException {
+    StringBuilder sb = new StringBuilder();
+    boolean hayConserjes = false; // Variable para verificar si hay conserjes
+
+    for (Usuario usuario : usuarios.getElementos().values()) {
+        if (usuario.getTipoUsuario() == TipoUsuario.CONSERJE) {
+            sb.append("Nombre: " + usuario.getNombre() + " DNI:" + usuario.getDni()).append("\n");
+            hayConserjes = true; // Si encontramos un conserje, cambiamos el estado
+        }
+    }
+
+    // Si no se han agregado conserjes, agregamos el mensaje
+    if (!hayConserjes) {
+        throw new ListaVaciaException("Actualmente no hay conserjes cargados en el sistema");
+    }
+
+    return sb.toString();
+}
+
+
+// Método para realizar el check-in completo
+public String realizarCheckInCompleto(String dniPasajero, int habitacion) throws ReservaInexistenteException, HabitacionInexistenteException {
+
+    for (Map.Entry<Integer, Pasajero> entry : pasajeros.getElementos().entrySet()) {
+        // Verificamos si el pasajero tiene el DNI que estamos buscando
+        Pasajero pasajero = (Pasajero) entry.getValue();  // Suponiendo que T es de tipo Pasajero
+
+        if (pasajero.getDni().equals(dniPasajero)) {
+            // Encontramos el pasajero, ahora podemos realizar la reserva
+            int id_Pasajero = pasajero.getId();
+
+            // Buscar la reserva del pasajero por DNI
+            Reserva reserva = reservas.buscarReservaPorPasajero(id_Pasajero, habitacion);
+            if (reserva == null) {
+                throw new ReservaInexistenteException("No se encontro la reserva asociada al pasajero " + dniPasajero);
+            }
+
+            // Verificar si la fecha de inicio es válida para el check-in
+            String mensajeCheckIn = reserva.realizar_CHECKIN();
+            System.out.println(mensajeCheckIn);
+            if (mensajeCheckIn.contains("correctamente")) {
+                // Si el check-in se realizó correctamente, cambiamos el estado de la habitación
+                Habitacion habitacion2 = habitaciones.buscar(reserva.getNumeroHabitacion());
+                if (habitacion2 != null) {
+                    String mensaje = habitacion2.cambiarEstadoHabitacion();
+                    habitaciones.agregar(reserva.getNumeroHabitacion(), habitacion2);
+                    reservas.agregar(reserva.getNumeroHabitacion(), reserva);
+                    return "Check-in realizado y se cambio la habitacion se encuentra: " + mensaje;
                 } else {
-                    // Si no se pudo realizar el check-in
-                    return mensajeCheckIn;
+                    throw new HabitacionInexistenteException();
                 }
+            } else {
+                // Si no se pudo realizar el check-in
+                return mensajeCheckIn;
             }
         }
-        // Si no encontramos el pasajero
-        return "Pasajero no encontrado.";
     }
+    // Si no encontramos el pasajero
+    return "Pasajero no encontrado.";
+}
 
-    public String realizarCheckOutCompleto(String dniPasajero, int habitacion) throws ReservaInexistenteException, HabitacionInexistenteException {
+public String realizarCheckOutCompleto(String dniPasajero, int habitacion) throws ReservaInexistenteException, HabitacionInexistenteException {
 
-        // Recorremos los pasajeros para encontrar al que tiene el DNI proporcionado
-        for (Map.Entry<Integer, Pasajero> entry : pasajeros.getElementos().entrySet()) {
-            Pasajero pasajero = (Pasajero) entry.getValue();  // Suponiendo que T es de tipo Pasajero
+    // Recorremos los pasajeros para encontrar al que tiene el DNI proporcionado
+    for (Map.Entry<Integer, Pasajero> entry : pasajeros.getElementos().entrySet()) {
+        Pasajero pasajero = (Pasajero) entry.getValue();  // Suponiendo que T es de tipo Pasajero
 
-            // Verificamos si el DNI del pasajero coincide con el que nos dieron
-            if (pasajero.getDni().equals(dniPasajero)) {
-                // Encontramos el pasajero, ahora podemos proceder con la reserva
-                int id_Pasajero = pasajero.getId();
+        // Verificamos si el DNI del pasajero coincide con el que nos dieron
+        if (pasajero.getDni().equals(dniPasajero)) {
+            // Encontramos el pasajero, ahora podemos proceder con la reserva
+            int id_Pasajero = pasajero.getId();
 
-                // Buscar la reserva del pasajero
-                Reserva reserva = reservas.buscarReservaPorPasajero(id_Pasajero, habitacion);
+            // Buscar la reserva del pasajero
+            Reserva reserva = reservas.buscarReservaPorPasajero(id_Pasajero, habitacion);
 
-                if (reserva == null) {
-                    return "No se encuentra ninguna reserva para el DNI proporcionado.";
-                }
+            if (reserva == null) {
+                return "No se encuentra ninguna reserva para el DNI proporcionado.";
+            }
 
-                // Verificar si la fecha de finalización es válida para el check-out
-                String mensajeCheckOut = reserva.realizar_CHECKOUT();
-                if (mensajeCheckOut.contains("correctamente")) {
-                    // Si el check-out se realizó correctamente, cambiamos el estado de la habitación
-                    Habitacion habitacion1 = habitaciones.buscar(reserva.getNumeroHabitacion());
-                    if (habitacion1 != null) {
-                        // Cambiamos el estado de la habitación a DISPONIBLE
-                        String mensajeCambioEstado = habitacion1.cambiarEstadoHabitacion();
-                        // Actualizamos el estado de la habitación en el mapa
-                        habitaciones.agregar(reserva.getNumeroHabitacion(), habitacion1);  // Aseguramos que se actualice en el mapa
+            // Verificar si la fecha de finalización es válida para el check-out
+            String mensajeCheckOut = reserva.realizar_CHECKOUT();
+            if (mensajeCheckOut.contains("correctamente")) {
+                // Si el check-out se realizó correctamente, cambiamos el estado de la habitación
+                Habitacion habitacion1 = habitaciones.buscar(reserva.getNumeroHabitacion());
+                if (habitacion1 != null) {
+                    // Cambiamos el estado de la habitación a DISPONIBLE
+                    String mensajeCambioEstado = habitacion1.cambiarEstadoHabitacion();
+                    // Actualizamos el estado de la habitación en el mapa
+                    habitaciones.agregar(reserva.getNumeroHabitacion(), habitacion1);  // Aseguramos que se actualice en el mapa
 
-                        // También aseguramos que la reserva esté correctamente almacenada (aunque podría no ser necesario si ya está almacenada)
-                        reservas.agregar(reserva.getNumeroHabitacion(), reserva);
+                    // También aseguramos que la reserva esté correctamente almacenada (aunque podría no ser necesario si ya está almacenada)
+                    reservas.agregar(reserva.getNumeroHabitacion(), reserva);
 
-                        return "Check-out realizado correctamente. La habitación ahora está disponible. " + mensajeCambioEstado;
-                    } else {
-                        return "La habitación no existe.";
-                    }
+                    return "Check-out realizado correctamente. La habitación ahora está disponible. " + mensajeCambioEstado;
                 } else {
-                    // Si no se pudo realizar el check-out
-                    return mensajeCheckOut;
+                    return "La habitación no existe.";
                 }
+            } else {
+                // Si no se pudo realizar el check-out
+                return mensajeCheckOut;
             }
         }
-        // Si no encontramos el pasajero con ese DNI
-        return "Pasajero no encontrado.";
     }
+    // Si no encontramos el pasajero con ese DNI
+    return "Pasajero no encontrado.";
+}
 // Cuestiones relacionandas con las habitaciones (Parte admin) -----------------------------------------------------------------
 
-    public String crearConserjeNuevo(String dni, String nombre) {
-        if (usuarios.isEmpty()) {
-            Conserje conserje = Administrador.crearConserje(dni, nombre);
-            usuarios.agregar(conserje.id, conserje);
-            return "Se cargo correctamente el conserje " + nombre;
-        } else {
-            for (Map.Entry<Integer, Usuario> entry : usuarios.getElementos().entrySet()) {
-                if (entry.getValue().getDni().equals(dni)) {
-                    return "Ya existe un usuario con dni " + dni;
-                }
-            }
-            Conserje conserje = Administrador.crearConserje(dni, nombre);
-            usuarios.agregar(conserje.getId(), conserje);
-            return "Se cargo correctamente el conserje " + nombre;
-        }
-    }
-
-    public String crearHabitacionNueva(int numero, TipoHabitacion tipoHabitacion, EstadoHabitacion estadoHabitacion) {
-        if (habitaciones.buscarBoolean(numero)) {
-            return "La habitacion ya existe";
-        } else {
-            Habitacion HabitacionNueva = Administrador.crearHabitacion(numero, tipoHabitacion, estadoHabitacion);
-            habitaciones.agregar(numero, HabitacionNueva);
-            return "Se creo correctamente la habitacion " + numero;
-        }
-    }
-
-
-    // Cambiar el estado de una habitación
-    public String cambiarEstadoHabitacion(int numeroHabitacion, EstadoHabitacion nuevoEstado) {
-        Habitacion habitacion = habitaciones.getElementos().get(numeroHabitacion);
-        if (habitacion != null) {
-            habitacion.setEstadoHabitacion(nuevoEstado);
-            return "El estado de la habitación " + numeroHabitacion + " ha sido actualizado a " + nuevoEstado + ".";
-        } else {
-            return "La habitación " + numeroHabitacion + " no existe.";
-        }
-    }
-
-    // Cambiar el tipo de una habitación
-    public String cambiarTipoHabitacion(int numeroHabitacion, TipoHabitacion nuevoTipo) {
-        Habitacion habitacion = habitaciones.getElementos().get(numeroHabitacion);
-        if (habitacion != null) {
-            habitacion.setTipoHabitacion(nuevoTipo);
-            return "El tipo de la habitación " + numeroHabitacion + " ha sido actualizado a " + nuevoTipo + ".";
-        } else {
-            return "La habitación " + numeroHabitacion + " no existe.";
-        }
-    }
-
-    // Cambiar el número de una habitación
-    public String cambiarNumeroHabitacion(int numeroActual, int nuevoNumero) {
-        if (!habitaciones.getElementos().containsKey(numeroActual)) {
-            return "La habitación " + numeroActual + " no existe.";
-        }
-        if (habitaciones.getElementos().containsKey(nuevoNumero)) {
-            return "Ya existe una habitación con el número " + nuevoNumero + ".";
-        }
-
-        // Cambiar el número de la habitación en el mapa
-        Habitacion habitacion = habitaciones.getElementos().remove(numeroActual);
-        habitacion.setNumero(nuevoNumero); // Aquí necesitas un setNumero en la clase Habitacion
-        habitaciones.getElementos().put(nuevoNumero, habitacion);
-
-        return "El número de la habitación ha sido cambiado de " + numeroActual + " a " + nuevoNumero + ".";
-    }
-    public boolean habitacionDisponibleFechas(int key, LocalDate inicioReserva, LocalDate finReserva)
-    {
-        return reservas.habitacionDisponibleFechas(key, inicioReserva, finReserva);
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public GestorDeDatos<Habitacion> getHabitaciones() {
-        return habitaciones;
-    }
-
-    public void setHabitaciones(GestorDeDatos<Habitacion> habitaciones) {
-        this.habitaciones = habitaciones;
-    }
-
-    public GestorDeDatos<Pasajero> getPasajeros() {
-        return pasajeros;
-    }
-
-    public void setPasajeros(GestorDeDatos<Pasajero> pasajeros) {
-        this.pasajeros = pasajeros;
-    }
-
-    public GestorDeReservas<Reserva> getReservas() {
-        return reservas;
-    }
-
-    public void setReservas(GestorDeReservas<Reserva> reservas) {
-        this.reservas = reservas;
-    }
-
-    public GestorDeDatos<Usuario> getUsuarios() {
-        return usuarios;
-    }
-
-    public void setUsuarios(GestorDeDatos<Usuario> usuarios) {
-        this.usuarios = usuarios;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Hotel hotel = (Hotel) o;
-        return Objects.equals(nombre, hotel.nombre) && Objects.equals(habitaciones, hotel.habitaciones) && Objects.equals(pasajeros, hotel.pasajeros) && Objects.equals(reservas, hotel.reservas);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(nombre, habitaciones, pasajeros, reservas);
-    }
-
-    @Override
-    public String toString() {
-        return "Clases.Hotel:\n"+
-                "Nombre:'" + nombre + '\n' +
-                "Habitaciones:" + habitaciones +'\n'+
-                "Pasajeros:" + pasajeros +'\n'+
-                "Reservas:" + reservas;
-    }
-    // Implementación de toJSON y cargar ARCHIVO
-    public void cargarArch() {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("nombre", nombre);
-
-        // Convertir las habitaciones a JSON
-        JSONArray habitacionesArray = new JSONArray();
-        for (Map.Entry<Integer, Habitacion> entry : habitaciones.getElementos().entrySet()) {
-            habitacionesArray.put(entry.getValue().toJSON());
-        }
-        jsonObject.put("habitaciones", habitacionesArray);
-
-        // Convertir los pasajeros a JSON
-        JSONArray pasajerosArray = new JSONArray();
-        for (Map.Entry<Integer, Pasajero> entry : pasajeros.getElementos().entrySet()) {
-            pasajerosArray.put(entry.getValue().toJSON());
-        }
-        jsonObject.put("pasajeros", pasajerosArray);
-
-        // Convertir las reservas a JSON
-        JSONArray reservasArray = reservas.toJSON();
-        jsonObject.put("reservas", reservasArray);
-
-        // Convertir los usuarios a JSON
-        JSONArray usuariosArray = new JSONArray();
+public String crearConserjeNuevo(String dni, String nombre) {
+    if (usuarios.isEmpty()) {
+        Conserje conserje = Administrador.crearConserje(dni, nombre);
+        usuarios.agregar(conserje.id, conserje);
+        return "Se cargo correctamente el conserje " + nombre;
+    } else {
         for (Map.Entry<Integer, Usuario> entry : usuarios.getElementos().entrySet()) {
-            usuariosArray.put(entry.getValue().toJSON());
+            if (entry.getValue().getDni().equals(dni)) {
+                return "Ya existe un usuario con dni " + dni;
+            }
         }
-        jsonObject.put("usuarios", usuariosArray);
-
-        JSONUtiles.uploadJSON(jsonObject, "Hotel");
+        Conserje conserje = Administrador.crearConserje(dni, nombre);
+        usuarios.agregar(conserje.getId(), conserje);
+        return "Se cargo correctamente el conserje " + nombre;
     }
+}
+
+public String crearHabitacionNueva(int numero, TipoHabitacion tipoHabitacion, EstadoHabitacion estadoHabitacion) {
+    if (habitaciones.buscarBoolean(numero)) {
+        return "La habitacion ya existe";
+    } else {
+        Habitacion HabitacionNueva = Administrador.crearHabitacion(numero, tipoHabitacion, estadoHabitacion);
+        habitaciones.agregar(numero, HabitacionNueva);
+        return "Se creo correctamente la habitacion " + numero;
+    }
+}
+
+
+// Cambiar el estado de una habitación
+public String cambiarEstadoHabitacion(int numeroHabitacion, EstadoHabitacion nuevoEstado) {
+    Habitacion habitacion = habitaciones.getElementos().get(numeroHabitacion);
+    if (habitacion != null) {
+        habitacion.setEstadoHabitacion(nuevoEstado);
+        return "El estado de la habitación " + numeroHabitacion + " ha sido actualizado a " + nuevoEstado + ".";
+    } else {
+        return "La habitación " + numeroHabitacion + " no existe.";
+    }
+}
+
+// Cambiar el tipo de una habitación
+public String cambiarTipoHabitacion(int numeroHabitacion, TipoHabitacion nuevoTipo) {
+    Habitacion habitacion = habitaciones.getElementos().get(numeroHabitacion);
+    if (habitacion != null) {
+        habitacion.setTipoHabitacion(nuevoTipo);
+        return "El tipo de la habitación " + numeroHabitacion + " ha sido actualizado a " + nuevoTipo + ".";
+    } else {
+        return "La habitación " + numeroHabitacion + " no existe.";
+    }
+}
+
+// Cambiar el número de una habitación
+public String cambiarNumeroHabitacion(int numeroActual, int nuevoNumero) {
+    if (!habitaciones.getElementos().containsKey(numeroActual)) {
+        return "La habitación " + numeroActual + " no existe.";
+    }
+    if (habitaciones.getElementos().containsKey(nuevoNumero)) {
+        return "Ya existe una habitación con el número " + nuevoNumero + ".";
+    }
+
+    // Cambiar el número de la habitación en el mapa
+    Habitacion habitacion = habitaciones.getElementos().remove(numeroActual);
+    habitacion.setNumero(nuevoNumero); // Aquí necesitas un setNumero en la clase Habitacion
+    habitaciones.getElementos().put(nuevoNumero, habitacion);
+
+    return "El número de la habitación ha sido cambiado de " + numeroActual + " a " + nuevoNumero + ".";
+}
+
+public boolean habitacionDisponibleFechas(int key, LocalDate inicioReserva, LocalDate finReserva) {
+    return reservas.habitacionDisponibleFechas(key, inicioReserva, finReserva);
+}
+
+public String getNombre() {
+    return nombre;
+}
+
+public void setNombre(String nombre) {
+    this.nombre = nombre;
+}
+
+public GestorDeDatos<Habitacion> getHabitaciones() {
+    return habitaciones;
+}
+
+public void setHabitaciones(GestorDeDatos<Habitacion> habitaciones) {
+    this.habitaciones = habitaciones;
+}
+
+public GestorDeDatos<Pasajero> getPasajeros() {
+    return pasajeros;
+}
+
+public void setPasajeros(GestorDeDatos<Pasajero> pasajeros) {
+    this.pasajeros = pasajeros;
+}
+
+public GestorDeReservas<Reserva> getReservas() {
+    return reservas;
+}
+
+public void setReservas(GestorDeReservas<Reserva> reservas) {
+    this.reservas = reservas;
+}
+
+public GestorDeDatos<Usuario> getUsuarios() {
+    return usuarios;
+}
+
+public void setUsuarios(GestorDeDatos<Usuario> usuarios) {
+    this.usuarios = usuarios;
+}
+
+@Override
+public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Hotel hotel = (Hotel) o;
+    return Objects.equals(nombre, hotel.nombre) && Objects.equals(habitaciones, hotel.habitaciones) && Objects.equals(pasajeros, hotel.pasajeros) && Objects.equals(reservas, hotel.reservas);
+}
+
+@Override
+public int hashCode() {
+    return Objects.hash(nombre, habitaciones, pasajeros, reservas);
+}
+
+@Override
+public String toString() {
+    return "Clases.Hotel:\n" +
+            "Nombre:'" + nombre + '\n' +
+            "Habitaciones:" + habitaciones + '\n' +
+            "Pasajeros:" + pasajeros + '\n' +
+            "Reservas:" + reservas;
+}
+
+// Implementación de toJSON y cargar ARCHIVO
+public void cargarArch() {
+    JSONObject jsonObject = new JSONObject();
+    jsonObject.put("nombre", nombre);
+
+    // Convertir las habitaciones a JSON
+    JSONArray habitacionesArray = new JSONArray();
+    for (Map.Entry<Integer, Habitacion> entry : habitaciones.getElementos().entrySet()) {
+        habitacionesArray.put(entry.getValue().toJSON());
+    }
+    jsonObject.put("habitaciones", habitacionesArray);
+
+    // Convertir los pasajeros a JSON
+    JSONArray pasajerosArray = new JSONArray();
+    for (Map.Entry<Integer, Pasajero> entry : pasajeros.getElementos().entrySet()) {
+        pasajerosArray.put(entry.getValue().toJSON());
+    }
+    jsonObject.put("pasajeros", pasajerosArray);
+
+    // Convertir las reservas a JSON
+    JSONArray reservasArray = reservas.toJSON();
+    jsonObject.put("reservas", reservasArray);
+
+    // Convertir los usuarios a JSON
+    JSONArray usuariosArray = new JSONArray();
+    for (Map.Entry<Integer, Usuario> entry : usuarios.getElementos().entrySet()) {
+        usuariosArray.put(entry.getValue().toJSON());
+    }
+    jsonObject.put("usuarios", usuariosArray);
+
+    JSONUtiles.uploadJSON(jsonObject, "Hotel");
+}
 
 }

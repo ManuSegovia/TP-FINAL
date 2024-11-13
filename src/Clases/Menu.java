@@ -12,7 +12,7 @@ public class Menu {
         // Mostrar el cartel
         System.out.println("╔════════════════════════════════════════╗");
         System.out.println("║        B I E N V E N I D O   a         ║");
-        System.out.println("║        H O T E L   V A L L E S         ║");
+        System.out.println("║        N U E S T R O  H O T E L        ║");
         System.out.println("╠════════════════════════════════════════╣");
         System.out.println("║                                        ║");
         System.out.println("║     Ingrese su DNI para comenzar       ║");

@@ -17,7 +17,7 @@ public class SolicitudDatos {
         Scanner scanner = new Scanner(System.in);
         Pasajero nuevoPasajero = null;
 
-        // Continuar pidiendo los datos hasta que se cree un pasajero con un DNI único
+        // Continuar pidiendo los datos hasta que se cree un pasajero con un DNI único y válido
         while (nuevoPasajero == null) {
             // Solicitar datos al conserje
             System.out.println("Ingrese el nombre del pasajero:");
@@ -26,20 +26,33 @@ public class SolicitudDatos {
             System.out.println("Ingrese el apellido del pasajero:");
             String apellido = scanner.nextLine();
 
-            System.out.println("Ingrese el DNI del pasajero:");
-            String dni = scanner.nextLine();
+            // Solicitar y validar el DNI hasta que sea correcto
+            String dni = null;
+            boolean dniValido = false;
+            while (!dniValido) {
+                System.out.println("Ingrese el DNI del pasajero (8 dígitos numéricos):");
+                dni = scanner.nextLine();
+                if (dni.matches("\\d{8}")) {
+                    dniValido = true;
+                } else {
+                    System.out.println("DNI inválido. Debe contener exactamente 8 dígitos numéricos. Intente nuevamente.");
+                }
+            }
+
+            // Crear una variable final para el DNI antes de la expresión lambda
+            final String dniFinal = dni;
 
             // Comprobar si el pasajero ya existe en el sistema
             boolean pasajeroExistente = mihotel.getPasajeros().getElementos().values()
                     .stream()
-                    .anyMatch(pasajero -> pasajero.getDni().equals(dni));
+                    .anyMatch(pasajero -> pasajero.getDni().equals(dniFinal));
 
             if (pasajeroExistente) {
                 System.out.println("El pasajero con DNI " + dni + " ya existe en el sistema. Por favor, ingrese un DNI diferente.");
-                continue; // Volver a solicitar los datos
+                continue; // Volver a solicitar todos los datos si el DNI ya existe
             }
 
-            // Si el DNI es único, pedir más datos
+            // Si el DNI es único y válido, pedir más datos
             System.out.println("Ingrese el origen del pasajero:");
             String origen = scanner.nextLine();
 
@@ -47,16 +60,18 @@ public class SolicitudDatos {
             String domicilioOrigen = scanner.nextLine();
 
             // Crear un nuevo objeto Pasajero con los datos proporcionados
-            nuevoPasajero = new Pasajero(nombre, apellido, dni, origen, domicilioOrigen);
+            nuevoPasajero = new Pasajero(nombre, apellido, dniFinal, origen, domicilioOrigen);
 
             // Almacenar al pasajero en el mapa
             mihotel.getPasajeros().agregar(nuevoPasajero.getId(), nuevoPasajero);
 
             // Retornar el objeto Pasajero creado
             System.out.println("Pasajero creado exitosamente con el ID: " + nuevoPasajero.getId());
-
         }
     }
+
+
+
 
 
     // creacion de habitacion
@@ -135,8 +150,19 @@ public class SolicitudDatos {
         Scanner scanner = new Scanner(System.in);
 
         try {
-            System.out.println("Ingrese el DNI del conserje:");
-            String dni = scanner.nextLine();
+            String dni = null;
+            boolean dniValido = false;
+
+            // Validar el formato del DNI hasta que sea correcto
+            while (!dniValido) {
+                System.out.println("Ingrese el DNI del conserje (8 dígitos numéricos):");
+                dni = scanner.nextLine();
+                if (dni.matches("\\d{8}")) {
+                    dniValido = true;
+                } else {
+                    System.out.println("DNI inválido. Debe contener exactamente 8 dígitos numéricos. Intente nuevamente.");
+                }
+            }
 
             System.out.println("Ingrese el nombre del conserje:");
             String nombre = scanner.nextLine();
@@ -147,6 +173,7 @@ public class SolicitudDatos {
             System.out.println("Error al ingresar alguno de los datos: " + e.getMessage());
         }
     }
+
 
     public static EstadoHabitacion obtenerEstadoHabitacion() {
         Scanner scanner = new Scanner(System.in);
@@ -263,21 +290,18 @@ public class SolicitudDatos {
 }
 
     // Método estático para pedir datos de la reserva del mantenimiento
-    public static Reserva pedirDatosReservaMantenimiento (Hotel mihotel) {
+    public static Reserva pedirDatosReservaMantenimiento(Hotel mihotel) {
         Scanner scanner = new Scanner(System.in);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         LocalDate fechaInicio = null;
         LocalDate fechaFin = null;
         int numeroHabitacion = 0;
-        String descripcion=null;
-
+        String descripcion;
 
         // Pedir fecha de inicio hasta que sea una fecha válida
         boolean fechaInicioValida = false;
-        while(!fechaInicioValida)
-
-        {
+        while (!fechaInicioValida) {
             System.out.println("Ingrese la fecha de inicio de la reserva (formato yyyy-MM-dd):");
             try {
                 fechaInicio = LocalDate.parse(scanner.nextLine(), formatter);
@@ -289,9 +313,7 @@ public class SolicitudDatos {
 
         // Pedir fecha de fin hasta que sea una fecha válida
         boolean fechaFinValida = false;
-        while(!fechaFinValida)
-
-        {
+        while (!fechaFinValida) {
             System.out.println("Ingrese la fecha de fin de la reserva (formato yyyy-MM-dd):");
             try {
                 fechaFin = LocalDate.parse(scanner.nextLine(), formatter);
@@ -303,9 +325,7 @@ public class SolicitudDatos {
 
         // Pedir número de habitación hasta que sea un entero válido
         boolean numeroHabitacionValido = false;
-        while(!numeroHabitacionValido)
-
-        {
+        while (!numeroHabitacionValido) {
             System.out.println("Ingrese el número de la habitación:");
             try {
                 numeroHabitacion = scanner.nextInt();
@@ -316,19 +336,21 @@ public class SolicitudDatos {
             }
         }
 
-        System.out.println("Ingrese la descripcion del nmantenimiento:");
+        scanner.nextLine(); // Limpiar el buffer antes de pedir la descripción
+
+        // Pedir descripción del mantenimiento
+        System.out.println("Ingrese la descripción del mantenimiento:");
         descripcion = scanner.nextLine();
 
-        return new
-
-                Reserva(-3, fechaInicio, fechaFin, numeroHabitacion,descripcion);
+        return new Reserva(-3, fechaInicio, fechaFin, numeroHabitacion, descripcion);
     }
+
 
     // Método para generar una reserva
     public static String generarReservaMantenimiento(Hotel mihotel) throws HabitacionInexistenteException, PasajeroInexistenteException {
-        Reserva aux = pedirDatosReserva(mihotel);
+        Reserva aux = pedirDatosReservaMantenimiento(mihotel);
         System.out.println("Generando nueva reserva...");
-        return mihotel.generarReserva(aux.getNumeroHabitacion(),-3, aux.getFechaInicio(), aux.getFechaFin(),aux.getDescripcion());
+        return mihotel.generarReservaMantenimiento(aux.getNumeroHabitacion(),-3, aux.getFechaInicio(), aux.getFechaFin(),aux.getDescripcion());
     }
 
     // Método para generar una reserva

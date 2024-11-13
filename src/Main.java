@@ -30,13 +30,11 @@ public class Main {
         Hotel mihotel = null;
 
         Scanner scanner = new Scanner(System.in);
-
         try {
             mihotel = fromJson();
         } catch (JSONException e) {
             System.out.println(e.getMessage());
         }
-
         // se ingresa una opcion no valida para comenzar
         int arranque = -1;
         while (arranque != 0) {
@@ -93,23 +91,25 @@ public class Main {
                                                         }
                                                         break;
                                                     case 5:
+
                                                         int opcionModificar = -1;
+                                                        // Pedir el DNI del pasajero
+                                                        System.out.println("Ingrese el dni del pasajero a modificar");
+                                                        String dni = Menu.pedirDni();
+                                                        // Buscar el pasajero en el hotel
+                                                        Pasajero pasajero = mihotel.buscarPasajeroPorDni(dni);
+
+                                                        // Verificar si el pasajero existe
+                                                        if (pasajero == null) {
+                                                            // Si el pasajero no existe, mostrar un mensaje
+                                                            System.out.println("El pasajero con DNI " + dni + " no existe en el sistema.");
+                                                            break;
+                                                        } else {
+                                                            // Si el pasajero existe, mostrar el menú para modificar los datos
+                                                            opcionModificar = Menu.menuModificarPasajero();
+
+
                                                         while (opcionModificar != 0) {
-                                                            // Pedir el DNI del pasajero
-                                                            System.out.println("Ingrese el dni del pasajero a modificar");
-                                                            String dni = Menu.pedirDni();
-                                                            // Buscar el pasajero en el hotel
-                                                            Pasajero pasajero = mihotel.buscarPasajeroPorDni(dni);
-
-                                                            // Verificar si el pasajero existe
-                                                            if (pasajero == null) {
-                                                                // Si el pasajero no existe, mostrar un mensaje
-                                                                System.out.println("El pasajero con DNI " + dni + " no existe en el sistema.");
-                                                                break;
-                                                            } else {
-                                                                // Si el pasajero existe, mostrar el menú para modificar los datos
-                                                                opcionModificar = Menu.menuModificarPasajero();
-
                                                                 // Procesar la opción seleccionada en el menú
                                                                 switch (opcionModificar) {
                                                                     case 1:
@@ -150,26 +150,28 @@ public class Main {
                                                                         break;
                                                                 }
                                                                 mihotel.getPasajeros().agregar(pasajero.getId(), pasajero);
+                                                            opcionModificar = 0;
                                                             }
                                                         }
                                                         break;
                                                     case 6:
                                                         int opcionModificar2 = -1;
-                                                        while (opcionModificar2 != 0) {
-                                                            // Pedir el DNI del conserje
-                                                            System.out.println("Ingrese el dni del conserje a modificar");
-                                                            String dni = Menu.pedirDni();
+                                                        // Pedir el DNI del conserje
+                                                        System.out.println("Ingrese el dni del conserje a modificar");
+                                                        String dni2 = Menu.pedirDni();
 
-                                                            // Buscar el conserje en el hotel
-                                                            Conserje conserje = (Conserje) mihotel.buscarConcerjePorDni(dni);
+                                                        // Buscar el conserje en el hotel
+                                                        Conserje conserje = (Conserje) mihotel.buscarConcerjePorDni(dni2);
 
-                                                            // Verificar si el conserje existe
-                                                            if (conserje == null) {
-                                                                // Si el conserje no existe, mostrar un mensaje
-                                                                System.out.println("El conserje con DNI " + dni + " no existe en el sistema.");
-                                                            } else {
-                                                                // Si el conserje existe, mostrar el menú para modificar los datos
-                                                                opcionModificar2 = Menu.menuModificarConserje();
+                                                        // Verificar si el conserje existe
+                                                        if (conserje == null) {
+                                                            // Si el conserje no existe, mostrar un mensaje
+                                                            System.out.println("El conserje con DNI " + dni2 + " no existe en el sistema.");
+                                                        } else {
+                                                            // Si el conserje existe, mostrar el menú para modificar los datos
+                                                            opcionModificar2 = Menu.menuModificarConserje();
+
+                                                            while (opcionModificar2 != 0) {
 
                                                                 // Procesar la opción seleccionada en el menú
                                                                 switch (opcionModificar2) {
@@ -193,6 +195,7 @@ public class Main {
                                                                         break;
                                                                 }
                                                                 mihotel.getUsuarios().agregar(conserje.getId(), conserje);
+                                                                opcionModificar2 = 0;
                                                             }
                                                         }
                                                         break;
@@ -234,6 +237,7 @@ public class Main {
                                                                     break;
                                                             }
                                                             mihotel.getUsuarios().agregar(administrador.getId(), administrador);
+                                                            opcionModificar3 = 0;
                                                         }
                                                         break;
                                                     case 8:
@@ -373,6 +377,7 @@ public class Main {
                                                 } catch (HabitacionInexistenteException e) {
                                                     System.out.println(e.getMessage());
                                                 }
+                                                break;
                                             case 14:
                                                 // verificar disponibilidad de una habitacion x fecha
                                                 System.out.println(SolicitudDatos.solicitarDisponibilidad(mihotel));
@@ -471,7 +476,12 @@ public class Main {
                 LocalDate fechaFin = LocalDate.parse(reserva.getString("fechaFin"), formatter);
                 int numeroHabitacion = reserva.getInt("numeroHabitacion");
                 int idPasajero = reserva.getInt("idPasajero");
-                mihotel.generarReserva(numeroHabitacion, idPasajero, fechaInicio, fechaFin, descripcion);
+                if (idPasajero != -3) {
+                    mihotel.generarReserva(numeroHabitacion, idPasajero, fechaInicio, fechaFin, descripcion);
+                } else {
+                    mihotel.generarReservaMantenimiento(numeroHabitacion, idPasajero, fechaInicio, fechaFin, descripcion);
+                }
+
             }
 
         }
